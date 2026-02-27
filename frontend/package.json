@@ -16,7 +16,6 @@
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/material-icons-outlined": "^5.0.0",
     "@fontsource/roboto": "^5.0.0",
-    "@naute/shared": "*",
     "clsx": "^2.1.1",
     "codemirror": "^6.0.0",
     "dompurify": "^3.0.0",
@@ -29,6 +28,7 @@
     "react-router-dom": "^7.1.0"
   },
   "devDependencies": {
+    "@naute/shared": "*",
     "stylelint": "^17.4.0",
     "stylelint-config-idiomatic-order": "^10.0.0",
     "stylelint-config-standard": "^40.0.0",

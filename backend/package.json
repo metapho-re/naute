@@ -9,10 +9,10 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.750.0",
     "@aws-sdk/lib-dynamodb": "^3.750.0",
-    "@naute/shared": "*",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@naute/shared": "*",
     "@types/aws-lambda": "^8.10.147",
     "@types/node": "^25.2.3",
     "@types/uuid": "^10.0.0",
