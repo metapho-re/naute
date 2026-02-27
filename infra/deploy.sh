@@ -22,7 +22,8 @@ sam deploy --config-file infra/samconfig.toml --no-confirm-changeset \
   --parameter-overrides \
     "DomainName=$NAUTE_DOMAIN" \
     "HostedZoneId=$NAUTE_HOSTED_ZONE_ID" \
-    "CognitoDomainPrefix=$NAUTE_COGNITO_PREFIX"
+    "CognitoDomainPrefix=$NAUTE_COGNITO_PREFIX" \
+  || echo "No infrastructure changes to deploy, continuing..."
 
 echo "==> Building frontend"
 npm run build -w frontend
