@@ -153,7 +153,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: handler.handler
-      CodeUri: ../backend/src/handler.ts
+      CodeUri: ../backend/
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NauteTable
@@ -198,7 +198,7 @@ Resources:
         Target: es2022
         Sourcemap: false
         EntryPoints:
-          - handler.ts
+          - src/handler.ts
         Banner:
           - js=import { createRequire } from 'module'; const require = createRequire(import.meta.url);
         External:
