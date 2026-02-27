@@ -204,6 +204,7 @@ Resources:
         External:
           - "@aws-sdk/client-dynamodb"
           - "@aws-sdk/lib-dynamodb"
+          - "@naute/shared"
 
   # ──────────────────────────────────────────────
   # Frontend Hosting (S3 + CloudFront + Route53)
