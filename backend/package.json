@@ -1,0 +1,21 @@
+{
+  "name": "@naute/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.750.0",
+    "@aws-sdk/lib-dynamodb": "^3.750.0",
+    "@naute/shared": "*",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^25.2.3",
+    "@types/uuid": "^10.0.0",
+    "typescript": "~5.7.0"
+  }
+}

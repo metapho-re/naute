@@ -1,0 +1,465 @@
+@import "@fontsource/material-icons-outlined";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/600.css";
+@import "@fontsource/roboto/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─────────────────────────────────────────────────────
+   Kanagawa Theme — Lotus (light) / Wave (dark)
+   ───────────────────────────────────────────────────── */
+
+:root {
+  /* Backgrounds */
+  --base: #e5ddb0;
+  --surface: #dcd5ac;
+  --panel: #f2ecbc;
+  --float: #d5cea3;
+  --highlight: #e4d794;
+
+  /* Foregrounds */
+  --ink: #545464;
+  --ink-dim: #43436c;
+  --ink-muted: #8a8980;
+  --ink-faint: #a09cac;
+
+  /* Borders */
+  --edge: #d5cea3;
+
+  /* Accent */
+  --accent: #4d699b;
+  --accent-hover: #405880;
+  --accent-fg: #f2ecbc;
+
+  /* Tags */
+  --tag: #c7d7e0;
+  --tag-fg: #4d699b;
+
+  /* Active/Selected */
+  --active: #4d699b;
+  --active-fg: #f2ecbc;
+
+  /* Danger */
+  --danger: #c84053;
+  --danger-hover: #b53847;
+  --danger-dim: #e8cfc5;
+  --danger-fg: #f2ecbc;
+
+  /* Syntax highlighting (Kanagawa Lotus) */
+  --hl-keyword: #624c83;
+  --hl-string: #6f894e;
+  --hl-number: #b35b79;
+  --hl-constant: #cc6d00;
+  --hl-function: #4d699b;
+  --hl-type: #597b75;
+  --hl-comment: #8a8980;
+  --hl-operator: #836f4a;
+  --hl-punct: #4e8ca2;
+  --hl-attr: #cc6d00;
+  --hl-builtin: #6693bf;
+  --hl-meta: #c84053;
+  --hl-selector: #77713f;
+  --hl-params: #5d57a3;
+  --hl-addition: #6e915f;
+  --hl-deletion: #c84053;
+
+  /* Shadows */
+  --shadow-color: rgb(84 84 100 / 8%);
+  --shadow-color-heavy: rgb(84 84 100 / 16%);
+}
+
+.dark {
+  /* Backgrounds */
+  --base: #1f1f28;
+  --surface: #181820;
+  --panel: #2a2a37;
+  --float: #16161d;
+  --highlight: #363646;
+
+  /* Foregrounds */
+  --ink: #dcd7ba;
+  --ink-dim: #c8c093;
+  --ink-muted: #727169;
+  --ink-faint: #54546d;
+
+  /* Borders */
+  --edge: #363646;
+
+  /* Accent */
+  --accent: #7e9cd8;
+  --accent-hover: #8baae0;
+  --accent-fg: #16161d;
+
+  /* Tags */
+  --tag: #223249;
+  --tag-fg: #9cabca;
+
+  /* Active/Selected */
+  --active: #7e9cd8;
+  --active-fg: #16161d;
+
+  /* Danger */
+  --danger: #e46876;
+  --danger-hover: #ff5d62;
+  --danger-dim: #43242b;
+  --danger-fg: #dcd7ba;
+
+  /* Syntax highlighting (Kanagawa Wave) */
+  --hl-keyword: #957fb8;
+  --hl-string: #98bb6c;
+  --hl-number: #d27e99;
+  --hl-constant: #ffa066;
+  --hl-function: #7e9cd8;
+  --hl-type: #7aa89f;
+  --hl-comment: #727169;
+  --hl-operator: #c0a36e;
+  --hl-punct: #9cabca;
+  --hl-attr: #ffa066;
+  --hl-builtin: #7fb4ca;
+  --hl-meta: #e46876;
+  --hl-selector: #e6c384;
+  --hl-params: #b8b4d0;
+  --hl-addition: #76946a;
+  --hl-deletion: #c34043;
+
+  /* Shadows */
+  --shadow-color: rgb(0 0 0 / 25%);
+  --shadow-color-heavy: rgb(0 0 0 / 45%);
+}
+
+@theme {
+  --color-base: var(--base);
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+  --color-float: var(--float);
+  --color-highlight: var(--highlight);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-edge: var(--edge);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-tag: var(--tag);
+  --color-tag-fg: var(--tag-fg);
+  --color-active: var(--active);
+  --color-active-fg: var(--active-fg);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-dim: var(--danger-dim);
+  --color-danger-fg: var(--danger-fg);
+  --shadow-soft: 0 1px 3px var(--shadow-color);
+  --shadow-elevated: 0 4px 12px var(--shadow-color), 0 1px 3px var(--shadow-color);
+  --shadow-floating: 0 8px 24px var(--shadow-color-heavy), 0 2px 8px var(--shadow-color);
+}
+
+/* ─────────────────────────────────────────────────────
+   Base styles
+   ───────────────────────────────────────────────────── */
+
+body {
+  margin: 0;
+  background-color: var(--base);
+  color: var(--ink);
+  font-family:
+    Roboto,
+    -apple-system,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+* {
+  scrollbar-color: var(--ink-faint) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: var(--ink-faint);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-muted);
+}
+
+/* ─────────────────────────────────────────────────────
+   Material icons
+   ───────────────────────────────────────────────────── */
+
+.material-icons-outlined {
+  display: inline-block;
+  direction: ltr;
+  font-family: "Material Icons Outlined", sans-serif;
+  font-feature-settings: "liga";
+  font-size: 28px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  overflow-wrap: normal;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────────────────
+   CodeMirror — Kanagawa overrides
+   ───────────────────────────────────────────────────── */
+
+.cm-editor {
+  height: 100%;
+  box-shadow: var(--shadow-soft);
+}
+
+.cm-editor.cm-focused {
+  outline: none;
+}
+
+.cm-scroller {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────────────
+   Markdown preview
+   ───────────────────────────────────────────────────── */
+
+.markdown-preview {
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.markdown-preview h1 {
+  font-size: 1.8rem;
+}
+
+.markdown-preview h2 {
+  font-size: 1.5rem;
+}
+
+.markdown-preview h3 {
+  font-size: 1.25rem;
+}
+
+.markdown-preview h4 {
+  font-size: 1.1rem;
+}
+
+.markdown-preview p {
+  margin-bottom: 1em;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.markdown-preview li {
+  margin-bottom: 0.25em;
+}
+
+.markdown-preview a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-preview a:hover {
+  color: var(--accent-hover);
+}
+
+.markdown-preview code {
+  padding: 0.15em 0.4em;
+  border-radius: 0.25rem;
+  background-color: var(--surface);
+  color: var(--ink-dim);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.875em;
+}
+
+.markdown-preview pre {
+  padding: 1em;
+  border: 1px solid var(--edge);
+  border-radius: 0.5rem;
+  margin-bottom: 1em;
+  background-color: var(--surface);
+  overflow-x: auto;
+}
+
+.markdown-preview pre > code {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 0.85em;
+}
+
+.markdown-preview blockquote {
+  padding-left: 1em;
+  border-left: 3px solid var(--accent);
+  margin-bottom: 1em;
+  margin-left: 0;
+  color: var(--ink-muted);
+}
+
+.markdown-preview table {
+  width: 100%;
+  margin-bottom: 1em;
+  border-collapse: collapse;
+}
+
+.markdown-preview table th,
+.markdown-preview table td {
+  padding: 0.5em 0.75em;
+  border: 1px solid var(--edge);
+  text-align: left;
+}
+
+.markdown-preview table th {
+  background-color: var(--surface);
+  font-weight: 600;
+}
+
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid var(--edge);
+  margin: 1.5em 0;
+}
+
+.markdown-preview img {
+  max-width: 100%;
+  border-radius: 0.5rem;
+}
+
+/* ─────────────────────────────────────────────────────
+   Syntax highlighting — Kanagawa hljs tokens
+   ───────────────────────────────────────────────────── */
+
+.markdown-preview .hljs-keyword,
+.markdown-preview .hljs-selector-tag { color: var(--hl-keyword); }
+
+.markdown-preview .hljs-comment,
+.markdown-preview .hljs-quote {
+  color: var(--hl-comment);
+  font-style: italic;
+}
+
+.markdown-preview .hljs-attr,
+.markdown-preview .hljs-attribute { color: var(--hl-attr); }
+
+.markdown-preview .hljs-selector-class,
+.markdown-preview .hljs-selector-id { color: var(--hl-selector); }
+
+.markdown-preview .hljs-string {
+  color: var(--hl-string);
+}
+
+.markdown-preview .hljs-addition {
+  color: var(--hl-addition);
+}
+
+.markdown-preview .hljs-number {
+  color: var(--hl-number);
+}
+
+.markdown-preview .hljs-literal {
+  color: var(--hl-constant);
+}
+
+.markdown-preview .hljs-title.function_ {
+  color: var(--hl-function);
+}
+
+.markdown-preview .hljs-title.class_ {
+  color: var(--hl-type);
+}
+
+.markdown-preview .hljs-type {
+  color: var(--hl-type);
+}
+
+.markdown-preview .hljs-built_in {
+  color: var(--hl-builtin);
+}
+
+.markdown-preview .hljs-deletion {
+  color: var(--hl-deletion);
+}
+
+.markdown-preview .hljs-operator {
+  color: var(--hl-operator);
+}
+
+.markdown-preview .hljs-punctuation {
+  color: var(--hl-punct);
+}
+
+.markdown-preview .hljs-meta {
+  color: var(--hl-meta);
+}
+
+.markdown-preview .hljs-tag {
+  color: var(--hl-punct);
+}
+
+.markdown-preview .hljs-name {
+  color: var(--hl-builtin);
+}
+
+.markdown-preview .hljs-regexp {
+  color: var(--hl-operator);
+}
+
+.markdown-preview .hljs-symbol {
+  color: var(--hl-selector);
+}
+
+.markdown-preview .hljs-params {
+  color: var(--hl-params);
+}
+
+.markdown-preview .hljs-template-variable {
+  color: var(--hl-builtin);
+}
+
+.markdown-preview .hljs-emphasis {
+  font-style: italic;
+}
+
+.markdown-preview .hljs-strong {
+  font-weight: bold;
+}
