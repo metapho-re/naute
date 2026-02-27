@@ -22,6 +22,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-1
       - run: npm ci
+      - run: npm install -g esbuild
       - run: ./infra/deploy.sh
         env:
           NAUTE_DOMAIN: ${{ secrets.NAUTE_DOMAIN }}
