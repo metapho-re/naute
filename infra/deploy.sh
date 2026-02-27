@@ -15,7 +15,7 @@ echo "==> Building shared types"
 npm run build -w shared
 
 echo "==> Building SAM application"
-sam build --template-file infra/template.yaml
+sam build --template-file infra/template.yaml --no-cached
 
 echo "==> Deploying SAM stack"
 sam deploy --config-file infra/samconfig.toml --no-confirm-changeset \
