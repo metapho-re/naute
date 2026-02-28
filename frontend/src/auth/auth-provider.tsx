@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     })();
   }, [getRefreshedAccessToken]);
 
-  const login = async () => {
+  const login = useCallback(async () => {
     const verifier = getCodeVerifier();
     const challenge = await getCodeChallenge(verifier);
 
@@ -93,9 +93,9 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     });
 
     window.location.href = `${env.cognitoDomain}/oauth2/authorize?${params}`;
-  };
+  }, []);
 
-  const handleCallback = async (code: string) => {
+  const handleCallback = useCallback(async (code: string) => {
     setIsLoading(true);
 
     try {
@@ -139,7 +139,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   const logout = () => {
     setAccessToken(null);
