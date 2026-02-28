@@ -56,7 +56,7 @@ npm install
 2. Create `frontend/.env.local`:
 
    ```
-   VITE_API_URL=https://api.yourdomain.com/v1
+   VITE_API_URL=https://api.yourdomain.com
    VITE_COGNITO_DOMAIN=your-prefix.auth.us-east-1.amazoncognito.com
    VITE_COGNITO_CLIENT_ID=your-client-id
    VITE_REDIRECT_URI=http://localhost:5173/callback

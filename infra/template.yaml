@@ -299,7 +299,7 @@ Resources:
 Outputs:
   ApiUrl:
     Description: API endpoint URL
-    Value: !Sub "https://api.${DomainName}/v1"
+    Value: !Sub "https://api.${DomainName}"
 
   FrontendUrl:
     Description: Frontend URL
