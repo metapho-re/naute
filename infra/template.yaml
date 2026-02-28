@@ -130,6 +130,8 @@ Resources:
         Authorizers:
           CognitoAuthorizer:
             UserPoolArn: !GetAtt UserPool.Arn
+            AuthorizationScopes:
+              - openid
       Cors:
         AllowOrigin: "'*'"
         AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
