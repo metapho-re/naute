@@ -4,6 +4,7 @@ import { AuthGuard } from "./auth";
 import { Navbar } from "./components";
 import {
   CallbackPage,
+  LandingPage,
   NoteEditorPage,
   NoteListPage,
   NoteViewPage,
@@ -11,7 +12,7 @@ import {
 
 export const App = () => (
   <Routes>
-    <Route path="/" element={<Navigate to="/notes" replace />} />
+    <Route path="/" element={<LandingPage />} />
     <Route path="/callback" element={<CallbackPage />} />
     <Route
       element={

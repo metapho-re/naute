@@ -1,11 +1,12 @@
 import { type PropsWithChildren, useContext } from "react";
+import { Navigate } from "react-router-dom";
 
 import { cn } from "../utils";
 
 import { AuthContext } from "./auth-context";
 
 export const AuthGuard = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated, isLoading, login } = useContext(AuthContext);
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
 
   if (isLoading) {
     return (
@@ -21,13 +22,7 @@ export const AuthGuard = ({ children }: PropsWithChildren) => {
   }
 
   if (!isAuthenticated) {
-    login();
-
-    return (
-      <div className="bg-base flex h-screen items-center justify-center">
-        <p className="text-ink-muted">Redirecting to login...</p>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
