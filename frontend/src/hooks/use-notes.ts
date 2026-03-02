@@ -1,6 +1,7 @@
 import type { NoteSummary } from "@naute/shared";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
+import { noteKeys } from "./query-keys";
 import { useApiClient } from "./use-api-client";
 
 interface ReturnValue {
@@ -10,38 +11,16 @@ interface ReturnValue {
 }
 
 export const useNotes = (): ReturnValue => {
-  const api = useApiClient();
+  const { listNotes } = useApiClient();
 
-  const [notes, setNotes] = useState<NoteSummary[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, error, isLoading } = useQuery<NoteSummary[], Error>({
+    queryKey: noteKeys.lists(),
+    queryFn: ({ signal }) => listNotes(signal),
+  });
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    setIsLoading(true);
-    setError(null);
-
-    (async function () {
-      try {
-        setNotes(await api.listNotes(controller.signal));
-      } catch (e: unknown) {
-        if (controller.signal.aborted) {
-          return;
-        }
-
-        setError(e instanceof Error ? e.message : String(e));
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      }
-    })();
-
-    return () => {
-      controller.abort();
-    };
-  }, [api]);
-
-  return { error, isLoading, notes };
+  return {
+    error: error ? error.message : null,
+    isLoading,
+    notes: data ?? [],
+  };
 };

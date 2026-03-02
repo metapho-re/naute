@@ -1,6 +1,8 @@
 import type { CreateNoteRequest, Note, UpdateNoteRequest } from "@naute/shared";
-import { useCallback, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
+import { noteKeys } from "./query-keys";
 import { useApiClient } from "./use-api-client";
 
 interface ReturnValue {
@@ -13,35 +15,42 @@ interface ReturnValue {
 }
 
 export const useSaveNote = (): ReturnValue => {
-  const api = useApiClient();
+  const { createNote, updateNote } = useApiClient();
+  const queryClient = useQueryClient();
 
-  const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const mutation = useMutation<
+    Note,
+    Error,
+    {
+      id: string | undefined;
+      data: CreateNoteRequest | UpdateNoteRequest;
+    }
+  >({
+    mutationFn: ({ id, data }) => {
+      if (id) {
+        return updateNote(id, data as UpdateNoteRequest);
+      }
 
-  const save = useCallback(
-    async (
-      id: string | undefined,
-      data: CreateNoteRequest | UpdateNoteRequest,
-    ) => {
-      setIsSaving(true);
-      setError(null);
+      return createNote(data as CreateNoteRequest);
+    },
+    onSuccess: (_result, { id }) => {
+      queryClient.invalidateQueries({ queryKey: noteKeys.lists() });
 
-      try {
-        if (id) {
-          return await api.updateNote(id, data as UpdateNoteRequest);
-        }
-
-        return await api.createNote(data as CreateNoteRequest);
-      } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : String(e));
-
-        throw e;
-      } finally {
-        setIsSaving(false);
+      if (id) {
+        queryClient.invalidateQueries({ queryKey: noteKeys.detail(id) });
       }
     },
-    [api],
+  });
+
+  const save = useCallback(
+    (id: string | undefined, data: CreateNoteRequest | UpdateNoteRequest) =>
+      mutation.mutateAsync({ id, data }),
+    [mutation],
   );
 
-  return { error, isSaving, save };
+  return {
+    error: mutation.error ? mutation.error.message : null,
+    isSaving: mutation.isPending,
+    save,
+  };
 };

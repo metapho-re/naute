@@ -1,5 +1,7 @@
-import { useState, useCallback } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback } from "react";
 
+import { noteKeys } from "./query-keys";
 import { useApiClient } from "./use-api-client";
 
 interface ReturnValue {
@@ -9,28 +11,25 @@ interface ReturnValue {
 }
 
 export const useDeleteNote = (): ReturnValue => {
-  const api = useApiClient();
+  const { deleteNote } = useApiClient();
+  const queryClient = useQueryClient();
 
-  const [isDeleting, setIsDeleting] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const mutation = useMutation<void, Error, string>({
+    mutationFn: (id) => deleteNote(id),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: noteKeys.lists() });
+      queryClient.removeQueries({ queryKey: noteKeys.detail(id) });
+    },
+  });
 
   const remove = useCallback(
-    async (id: string) => {
-      setIsDeleting(true);
-      setError(null);
-
-      try {
-        await api.deleteNote(id);
-      } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : String(e));
-
-        throw e;
-      } finally {
-        setIsDeleting(false);
-      }
-    },
-    [api],
+    (id: string) => mutation.mutateAsync(id),
+    [mutation],
   );
 
-  return { error, isDeleting, remove };
+  return {
+    error: mutation.error ? mutation.error.message : null,
+    isDeleting: mutation.isPending,
+    remove,
+  };
 };
