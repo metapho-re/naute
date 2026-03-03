@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { AuthContext } from "../auth";
@@ -13,13 +13,20 @@ export const useCallbackPage = (): ReturnValue => {
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const { handleCallback, login } = useContext(AuthContext);
+  const isHandled = useRef<boolean>(false);
 
   useEffect(() => {
+    if (isHandled.current) {
+      return;
+    }
+
     const code = searchParams.get("code");
 
     if (!code) {
       return;
     }
+
+    isHandled.current = true;
 
     (async function () {
       try {
