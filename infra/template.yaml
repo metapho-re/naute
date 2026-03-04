@@ -17,7 +17,7 @@ Parameters:
 
   AnthropicApiKeyParam:
     Type: String
-    Default: /naute/anthropic-api-key
+    Default: naute/anthropic-api-key
     Description: SSM Parameter Store name for the Anthropic API key
 
 Globals:
