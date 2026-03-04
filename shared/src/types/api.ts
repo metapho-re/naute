@@ -9,6 +9,16 @@ export interface CreateNoteRequest {
   tags: string[];
 }
 
+export interface GenerateNoteRequest {
+  prompt: string;
+}
+
+export interface GenerateNoteResponse {
+  title: string;
+  content: string;
+  tags: string[];
+}
+
 export interface UpdateNoteRequest {
   title?: string;
   content?: string;

@@ -1,6 +1,8 @@
 import type {
   ApiResponse,
   CreateNoteRequest,
+  GenerateNoteRequest,
+  GenerateNoteResponse,
   Note,
   NoteSummary,
   UpdateNoteRequest,
@@ -11,6 +13,7 @@ import { env } from "../env";
 export interface ApiClient {
   createNote: (data: CreateNoteRequest) => Promise<Note>;
   deleteNote: (id: string) => Promise<void>;
+  generateNote: (data: GenerateNoteRequest) => Promise<GenerateNoteResponse>;
   getNote: (id: string, signal?: AbortSignal) => Promise<Note>;
   listNotes: (signal?: AbortSignal) => Promise<NoteSummary[]>;
   updateNote: (id: string, data: UpdateNoteRequest) => Promise<Note>;
@@ -41,10 +44,19 @@ export const createApiClient = (
   };
 
   const createNote = (req: CreateNoteRequest) =>
-    request<Note>("/notes", { method: "POST", body: JSON.stringify(req) });
+    request<Note>("/notes/create", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
 
   const deleteNote = (id: string) =>
     request<void>(`/notes/${id}`, { method: "DELETE" });
+
+  const generateNote = (req: GenerateNoteRequest) =>
+    request<GenerateNoteResponse>("/notes/generate", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
 
   const getNote = (id: string, signal?: AbortSignal) =>
     request<Note>(`/notes/${id}`, { signal });
@@ -61,6 +73,7 @@ export const createApiClient = (
   return {
     createNote,
     deleteNote,
+    generateNote,
     getNote,
     listNotes,
     updateNote,

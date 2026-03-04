@@ -1,13 +1,18 @@
-import type { CreateNoteRequest, UpdateNoteRequest } from "@naute/shared";
+import type {
+  CreateNoteRequest,
+  GenerateNoteRequest,
+  UpdateNoteRequest,
+} from "@naute/shared";
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
+import { generateNote } from "./ai-service";
 import {
   createNote,
   deleteNote,
   findNote,
   listNotes,
   updateNote,
-} from "./notes";
+} from "./note-service";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
@@ -34,7 +39,7 @@ export const handler = async (
   const method = event.httpMethod;
   const id = event.pathParameters?.id;
 
-  const route = `${method} ${id ? "/notes/:id" : "/notes"}`;
+  const route = `${method} ${event.resource}`;
 
   try {
     switch (route) {
@@ -44,27 +49,34 @@ export const handler = async (
         return getSuccessResponse(result);
       }
 
-      case "POST /notes": {
+      case "POST /notes/generate": {
+        const body = JSON.parse(event.body || "{}") as GenerateNoteRequest;
+        const result = await generateNote(body);
+
+        return getSuccessResponse(result);
+      }
+
+      case "POST /notes/create": {
         const body = JSON.parse(event.body || "{}") as CreateNoteRequest;
         const note = await createNote(body);
 
         return getSuccessResponse(note, 201);
       }
 
-      case "GET /notes/:id": {
+      case "GET /notes/{id}": {
         const note = await findNote(id!);
 
         return getSuccessResponse(note);
       }
 
-      case "PUT /notes/:id": {
+      case "PUT /notes/{id}": {
         const body = JSON.parse(event.body || "{}") as UpdateNoteRequest;
         const note = await updateNote(id!, body);
 
         return getSuccessResponse(note);
       }
 
-      case "DELETE /notes/:id": {
+      case "DELETE /notes/{id}": {
         await deleteNote(id as string);
 
         return getSuccessResponse(null, 204);

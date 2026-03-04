@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { Layout, NoteCard } from "../components";
+import { GenerateNoteDialog, Layout, NoteCard } from "../components";
+import { useGenerateNote } from "../hooks";
 import { cn } from "../utils";
 
 import { useNoteListPage } from "./use-note-list-page";
@@ -8,8 +9,10 @@ import { useNoteListPage } from "./use-note-list-page";
 const SKELETON_COUNT = 3;
 
 export const NoteListPage = () => {
+  const navigate = useNavigate();
+
   const {
-    error,
+    error: listError,
     filteredNotes,
     hasFilters,
     isLoading,
@@ -25,6 +28,29 @@ export const NoteListPage = () => {
     handleSortChange,
   } = useNoteListPage();
 
+  const {
+    error: generateError,
+    isGenerateDialogVisible,
+    isGenerating,
+    generate,
+    hideGenerateDialog,
+    showGenerateDialog,
+  } = useGenerateNote();
+
+  const handleGenerate = async (prompt: string) => {
+    const result = await generate(prompt);
+
+    if (result) {
+      navigate("/notes/new", {
+        state: {
+          title: result.title,
+          content: result.content,
+          tags: result.tags,
+        },
+      });
+    }
+  };
+
   return (
     <Layout
       noteCount={notes.length}
@@ -33,19 +59,20 @@ export const NoteListPage = () => {
       selectedTagNames={selectedTagNames}
       sort={sort}
       tags={tags}
+      onGenerateClick={showGenerateDialog}
       onOrderChange={handleOrderChange}
       onSearchChange={handleSearchQueryChange}
       onSortChange={handleSortChange}
       onTagSelect={handleSelectedTagNamesChange}
     >
-      {error && (
+      {listError && (
         <div
           className={cn(
             "mb-5 rounded-xl p-4 text-base",
             "bg-danger-dim text-danger",
           )}
         >
-          {error}
+          {listError}
         </div>
       )}
       {isLoading && notes.length === 0 ? (
@@ -109,6 +136,14 @@ export const NoteListPage = () => {
             <NoteCard key={note.id} note={note} />
           ))}
         </div>
+      )}
+      {isGenerateDialogVisible && (
+        <GenerateNoteDialog
+          error={generateError}
+          isGenerating={isGenerating}
+          onCancel={hideGenerateDialog}
+          onGenerate={handleGenerate}
+        />
       )}
     </Layout>
   );

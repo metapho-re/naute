@@ -13,6 +13,7 @@ interface Props {
   selectedTagNames: string[];
   sort: SortField;
   tags: Tag[];
+  onGenerateClick: () => void;
   onOrderChange: (order: SortOrder) => void;
   onSearchChange: (query: string) => void;
   onSortChange: (sort: SortField) => void;
@@ -26,6 +27,7 @@ export const Sidebar = ({
   selectedTagNames,
   sort,
   tags,
+  onGenerateClick,
   onOrderChange,
   onSearchChange,
   onSortChange,
@@ -54,13 +56,27 @@ export const Sidebar = ({
       <Link
         to="/notes/new"
         className={cn(
-          "mb-5 block rounded-lg px-4 py-2.5 text-center text-base font-medium",
+          "mb-3 flex items-center justify-center gap-1.5",
+          "rounded-lg px-4 py-2.5 text-base font-medium",
           "bg-accent text-accent-fg shadow-soft",
           "hover:bg-accent-hover transition-colors",
         )}
       >
-        + New Note
+        <span className="material-icons-outlined text-lg">note_add</span>
+        New Note
       </Link>
+      <button
+        onClick={onGenerateClick}
+        className={cn(
+          "mb-5 flex w-full items-center justify-center gap-1.5",
+          "rounded-lg border px-4 py-2.5 text-base font-medium",
+          "border-edge text-ink-dim",
+          "hover:bg-highlight transition-colors",
+        )}
+      >
+        <span className="material-icons-outlined text-lg">auto_awesome</span>
+        Generate with AI
+      </button>
       <input
         type="text"
         placeholder="Search notes..."

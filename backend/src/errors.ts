@@ -1,4 +1,4 @@
-const TAG_PATTERN = /^[a-z0-9-]+$/;
+export const TAG_PATTERN = /^[a-z0-9-]+$/;
 
 export class ValidationError extends Error {
   constructor(message: string) {
@@ -27,6 +27,16 @@ export const validateTitle = (title: string): void => {
 export const validateContent = (content: string): void => {
   if (content.length > 100 * 1024) {
     throw new ValidationError("Content must be 100KB or less.");
+  }
+};
+
+export const validatePrompt = (prompt: string): void => {
+  if (prompt.trim().length === 0) {
+    throw new ValidationError("Prompt is required.");
+  }
+
+  if (prompt.length > 10000) {
+    throw new ValidationError("Prompt must be 10,000 characters or less.");
   }
 };
 

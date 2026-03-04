@@ -1,3 +1,4 @@
+export { GenerateNoteDialog } from "./generate-note-dialog";
 export { Layout } from "./layout";
 export { Navbar } from "./navbar";
 export { NoteCard } from "./note-card";

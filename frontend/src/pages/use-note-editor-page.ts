@@ -1,7 +1,13 @@
 import { type RefObject, useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useDeleteNote, useNote, useNoteEditor, useSaveNote } from "../hooks";
+
+interface LocationState {
+  title?: string;
+  content?: string;
+  tags?: string[];
+}
 
 interface ReturnValue {
   editorRef: RefObject<HTMLDivElement | null>;
@@ -25,6 +31,7 @@ interface ReturnValue {
 }
 
 export const useNoteEditorPage = (): ReturnValue => {
+  const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
@@ -32,13 +39,17 @@ export const useNoteEditorPage = (): ReturnValue => {
   const { save, isSaving } = useSaveNote();
   const { remove, isDeleting } = useDeleteNote();
 
-  const [title, setTitle] = useState<string>("");
+  const locationState = location.state as LocationState | null;
+
+  const [hasChanges, setHasChanges] = useState<boolean>(!!locationState);
   const [tagInput, setTagInput] = useState<string>("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [hasChanges, setHasChanges] = useState<boolean>(false);
+  const [title, setTitle] = useState<string>(locationState?.title ?? "");
+  const [initialContent, setInitialContent] = useState<string>(
+    locationState?.content ?? "",
+  );
+  const [tags, setTags] = useState<string[]>(locationState?.tags ?? []);
   const [isDeleteConfirmVisible, setIsDeleteConfirmVisible] =
     useState<boolean>(false);
-  const [initialContent, setInitialContent] = useState<string>("");
 
   const handleContentChange = useCallback(() => {
     setHasChanges(true);

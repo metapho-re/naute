@@ -15,17 +15,23 @@ Parameters:
     Type: String
     Description: Globally unique prefix for the Cognito hosted UI domain
 
+  AnthropicApiKeyParam:
+    Type: String
+    Default: /naute/anthropic-api-key
+    Description: SSM Parameter Store name for the Anthropic API key
+
 Globals:
   Function:
     Runtime: nodejs22.x
     Architectures:
       - arm64
     MemorySize: 256
-    Timeout: 30
+    Timeout: 60
     Environment:
       Variables:
         TABLE_NAME: !Ref NauteTable
         ALLOWED_ORIGIN: !Sub "https://${DomainName}"
+        ANTHROPIC_API_KEY_PARAM: !Ref AnthropicApiKeyParam
 
 Resources:
   # ──────────────────────────────────────────────
@@ -159,6 +165,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NauteTable
+        - SSMParameterReadPolicy:
+            ParameterName: !Ref AnthropicApiKeyParam
       Events:
         ListNotes:
           Type: Api
@@ -166,11 +174,17 @@ Resources:
             RestApiId: !Ref NauteApi
             Path: /notes
             Method: GET
+        GenerateNote:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NauteApi
+            Path: /notes/generate
+            Method: POST
         CreateNote:
           Type: Api
           Properties:
             RestApiId: !Ref NauteApi
-            Path: /notes
+            Path: /notes/create
             Method: POST
         GetNote:
           Type: Api
@@ -206,7 +220,7 @@ Resources:
         External:
           - "@aws-sdk/client-dynamodb"
           - "@aws-sdk/lib-dynamodb"
-          - "@naute/shared"
+          - "@aws-sdk/client-ssm"
 
   # ──────────────────────────────────────────────
   # Frontend Hosting (S3 + CloudFront + Route53)
