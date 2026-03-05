@@ -96,6 +96,8 @@ export const handler = async (
       }
     }
 
+    console.error("Unhandled error:", error);
+
     return getErrorResponse("Internal server error", 500);
   }
 };
