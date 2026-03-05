@@ -47,6 +47,7 @@ No test framework is configured. There are no test files in the codebase.
 - `database.ts` — DynamoDB document client, key helpers, and data access functions (`getNote`, `putNote`, `removeNote`, `getAllNotes`)
 - `errors.ts` — Error classes (`ValidationError`, `NotFoundError`) and validation helpers
 - `notes.ts` — Service functions (`createNote`, `updateNote`, `deleteNote`, `findNote`, `listNotes`)
+- `ai-service.ts` — Claude API integration for note generation; retrieves API key from SSM Parameter Store (`/naute/anthropic-api-key`) with in-memory caching; returns structured JSON (title, content, tags)
 - `handler.ts` — Lambda handler (entry point); catches errors by `e.name` — `ValidationError` maps to 400, `NotFoundError` to 404
 
 **Infrastructure** (`infra/`): AWS SAM template and deployment config:
@@ -60,8 +61,8 @@ No test framework is configured. There are no test files in the codebase.
 
 - `auth/` — OAuth 2.0 Authorization Code + PKCE flow with Cognito (sessionStorage for code verifier, module-level variable for refresh token)
 - `services/api.ts` — Typed API client via `createApiClient(getToken)` higher-order function with automatic token injection
-- `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`)
-- `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace
+- `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`, `useGenerateNote`)
+- `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace, GenerateNoteDialog
 - `pages/` — CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/highlight.js/DOMPurify preview)
 - `theme/` — Kanagawa theme with light/dark variants and CSS variables
 - `env.ts` — Centralized type-safe access to all `VITE_*` environment variables

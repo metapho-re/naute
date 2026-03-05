@@ -5,6 +5,7 @@ A markdown note-taking app with a split-pane editor and live preview — deploye
 ## Features
 
 - 📝 **Split-pane Markdown editor** — CodeMirror editor on the left, live rendered preview on the right
+- 🤖 **AI note generation** — generate structured markdown notes from a prompt using Claude
 - 🔍 **Search, sort & filter** — find notes by title, sort by date or name, filter by tags
 - 🏷️ **Tagging system** — organize notes with tags, filter by multiple tags at once
 - 🔐 **Cognito authentication** — OAuth 2.0 Authorization Code + PKCE with optional TOTP MFA
@@ -18,6 +19,7 @@ A markdown note-taking app with a split-pane editor and live preview — deploye
 | -------------- | -------------------------------------------------------------- |
 | Frontend       | React 19, Vite, Tailwind CSS v4, CodeMirror 6                  |
 | Markdown       | marked, highlight.js, DOMPurify                                |
+| AI             | Claude API (Anthropic SDK), SSM Parameter Store for API key    |
 | Backend        | Node.js 22, AWS Lambda (arm64), API Gateway                    |
 | Database       | DynamoDB (single-table design)                                 |
 | Auth           | Amazon Cognito (OAuth 2.0 + PKCE)                              |
@@ -123,13 +125,14 @@ Pushes to `main` trigger the GitHub Actions workflow which deploys automatically
 
 All routes are authenticated via Cognito JWT.
 
-| Method   | Path            | Description       |
-| -------- | --------------- | ----------------- |
-| `GET`    | `/notes`        | List all notes    |
-| `POST`   | `/notes`        | Create a note     |
-| `GET`    | `/notes/{id}`   | Get a note        |
-| `PUT`    | `/notes/{id}`   | Update a note     |
-| `DELETE` | `/notes/{id}`   | Delete a note     |
+| Method   | Path              | Description            |
+| -------- | ----------------- | ---------------------- |
+| `GET`    | `/notes`          | List all notes         |
+| `POST`   | `/notes/create`   | Create a note          |
+| `GET`    | `/notes/{id}`     | Get a note             |
+| `PUT`    | `/notes/{id}`     | Update a note          |
+| `DELETE` | `/notes/{id}`     | Delete a note          |
+| `POST`   | `/notes/generate` | Generate a note via AI |
 
 ### Validation
 
