@@ -10,7 +10,6 @@ echo "==> Checking required environment variables definition"
 : "${NAUTE_DOMAIN:?Set NAUTE_DOMAIN}"
 : "${NAUTE_HOSTED_ZONE_ID:?Set NAUTE_HOSTED_ZONE_ID}"
 : "${NAUTE_COGNITO_PREFIX:?Set NAUTE_COGNITO_PREFIX}"
-: "${NAUTE_ANTHROPIC_PARAM:?Set NAUTE_ANTHROPIC_PARAM}"
 
 echo "==> Building shared types"
 npm run build -w shared
@@ -24,7 +23,6 @@ sam deploy --config-file infra/samconfig.toml --no-confirm-changeset \
     "DomainName=$NAUTE_DOMAIN" \
     "HostedZoneId=$NAUTE_HOSTED_ZONE_ID" \
     "CognitoDomainPrefix=$NAUTE_COGNITO_PREFIX" \
-    "AnthropicApiKeyParam=$NAUTE_ANTHROPIC_PARAM" \
   || echo "No infrastructure changes to deploy, continuing..."
 
 echo "==> Building frontend"

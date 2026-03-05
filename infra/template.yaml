@@ -15,10 +15,6 @@ Parameters:
     Type: String
     Description: Globally unique prefix for the Cognito hosted UI domain
 
-  AnthropicApiKeyParam:
-    Type: String
-    Default: naute/anthropic-api-key
-    Description: SSM Parameter Store name for the Anthropic API key
 
 Globals:
   Function:
@@ -31,7 +27,6 @@ Globals:
       Variables:
         TABLE_NAME: !Ref NauteTable
         ALLOWED_ORIGIN: !Sub "https://${DomainName}"
-        ANTHROPIC_API_KEY_PARAM: !Ref AnthropicApiKeyParam
 
 Resources:
   # ──────────────────────────────────────────────
@@ -165,8 +160,12 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NauteTable
-        - SSMParameterReadPolicy:
-            ParameterName: !Ref AnthropicApiKeyParam
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/naute/anthropic-api-key"
       Events:
         ListNotes:
           Type: Api

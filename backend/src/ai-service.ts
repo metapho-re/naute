@@ -28,14 +28,11 @@ const getApiKey = async (): Promise<string> => {
     return cachedApiKey;
   }
 
-  const parameterName = process.env.ANTHROPIC_API_KEY_PARAM;
-
-  if (!parameterName) {
-    throw new Error("ANTHROPIC_API_KEY_PARAM environment variable is not set");
-  }
-
   const result = await ssmClient.send(
-    new GetParameterCommand({ Name: parameterName, WithDecryption: true }),
+    new GetParameterCommand({
+      Name: "/naute/anthropic-api-key",
+      WithDecryption: true,
+    }),
   );
 
   const value = result.Parameter?.Value;
