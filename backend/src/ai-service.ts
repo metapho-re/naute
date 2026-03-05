@@ -69,15 +69,30 @@ export const generateNote = async (
     throw new Error("No text response from Claude");
   }
 
+  const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
+
+  if (!jsonMatch) {
+    console.error("No JSON object found in Claude response:", textBlock.text);
+
+    throw new Error("No JSON object found in Claude response");
+  }
+
   let note: GenerateNoteResponse;
 
   try {
-    note = JSON.parse(textBlock.text) as GenerateNoteResponse;
-  } catch {
+    note = JSON.parse(jsonMatch[0]) as GenerateNoteResponse;
+  } catch (e) {
+    console.error("Failed to parse Claude response as JSON:", e, jsonMatch[0]);
+
     throw new Error("Failed to parse Claude response as JSON");
   }
 
   if (!note.title || !note.content || !Array.isArray(note.tags)) {
+    console.error(
+      "Invalid response structure from Claude:",
+      JSON.stringify(note),
+    );
+
     throw new Error("Invalid response structure from Claude");
   }
 
