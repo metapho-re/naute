@@ -28,6 +28,7 @@ jobs:
           NAUTE_DOMAIN: ${{ secrets.NAUTE_DOMAIN }}
           NAUTE_HOSTED_ZONE_ID: ${{ secrets.NAUTE_HOSTED_ZONE_ID }}
           NAUTE_COGNITO_PREFIX: ${{ secrets.NAUTE_COGNITO_PREFIX }}
+          NAUTE_ANTHROPIC_PARAM: ${{ secrets.NAUTE_ANTHROPIC_PARAM }}
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
           VITE_COGNITO_DOMAIN: ${{ secrets.VITE_COGNITO_DOMAIN }}
           VITE_COGNITO_CLIENT_ID: ${{ secrets.VITE_COGNITO_CLIENT_ID }}
