@@ -69,20 +69,21 @@ export const generateNote = async (
     throw new Error("No text response from Claude");
   }
 
-  const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
-
-  if (!jsonMatch) {
-    console.error("No JSON object found in Claude response:", textBlock.text);
-
-    throw new Error("No JSON object found in Claude response");
-  }
-
   let note: GenerateNoteResponse;
 
   try {
-    note = JSON.parse(jsonMatch[0]) as GenerateNoteResponse;
+    const json = textBlock.text
+      .trim()
+      .replace(/^```(?:json)?\s*/, "")
+      .replace(/\s*```$/, "");
+
+    note = JSON.parse(json) as GenerateNoteResponse;
   } catch (e) {
-    console.error("Failed to parse Claude response as JSON:", e, jsonMatch[0]);
+    console.error(
+      "Failed to parse Claude response as JSON:",
+      e,
+      textBlock.text,
+    );
 
     throw new Error("Failed to parse Claude response as JSON");
   }
