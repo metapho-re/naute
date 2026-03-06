@@ -8,6 +8,13 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@font-face {
+  font-display: block;
+  font-family: "Material Icons Outlined";
+  src: url("@fontsource/material-icons-outlined/files/material-icons-outlined-latin-400-normal.woff2")
+    format("woff2");
+}
+
 /* ─────────────────────────────────────────────────────
    Kanagawa Theme — Lotus (light) / Wave (dark)
    ───────────────────────────────────────────────────── */
