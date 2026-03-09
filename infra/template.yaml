@@ -15,7 +15,6 @@ Parameters:
     Type: String
     Description: Globally unique prefix for the Cognito hosted UI domain
 
-
 Globals:
   Function:
     Runtime: nodejs22.x
@@ -155,17 +154,11 @@ Resources:
   NotesFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handler.handler
+      Handler: note-handler.handler
       CodeUri: ../backend/
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref NauteTable
-        - Version: "2012-10-17"
-          Statement:
-            - Effect: Allow
-              Action:
-                - ssm:GetParameter
-              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/naute/anthropic-api-key"
       Events:
         ListNotes:
           Type: Api
@@ -173,12 +166,6 @@ Resources:
             RestApiId: !Ref NauteApi
             Path: /notes
             Method: GET
-        GenerateNote:
-          Type: Api
-          Properties:
-            RestApiId: !Ref NauteApi
-            Path: /notes/generate
-            Method: POST
         CreateNote:
           Type: Api
           Properties:
@@ -213,12 +200,56 @@ Resources:
         Target: es2022
         Sourcemap: false
         EntryPoints:
-          - src/handler.ts
+          - src/note-handler.ts
         Banner:
           - js=import { createRequire } from 'module'; const require = createRequire(import.meta.url);
         External:
           - "@aws-sdk/client-dynamodb"
           - "@aws-sdk/lib-dynamodb"
+
+  GenerateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: ai-handler.handler
+      CodeUri: ../backend/
+      Timeout: 120
+      FunctionUrlConfig:
+        AuthType: NONE
+        InvokeMode: RESPONSE_STREAM
+        Cors:
+          AllowOrigins:
+            - !Sub "https://${DomainName}"
+            - "http://localhost:5173"
+          AllowMethods:
+            - POST
+          AllowHeaders:
+            - Content-Type
+            - Authorization
+      Environment:
+        Variables:
+          USER_POOL_ID: !Ref UserPool
+          USER_POOL_CLIENT_ID: !Ref UserPoolClient
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - ssm:GetParameter
+              Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/naute/anthropic-api-key"
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: false
+        OutExtension:
+          - .js=.mjs
+        Target: es2022
+        Sourcemap: false
+        EntryPoints:
+          - src/ai-handler.ts
+        Banner:
+          - js=import { createRequire } from 'module'; const require = createRequire(import.meta.url);
+        External:
           - "@aws-sdk/client-ssm"
 
   # ──────────────────────────────────────────────
@@ -339,6 +370,10 @@ Outputs:
   CloudFrontDistributionId:
     Description: CloudFront distribution ID
     Value: !Ref FrontendDistribution
+
+  GenerateUrl:
+    Description: Lambda Function URL for note generation
+    Value: !GetAtt GenerateFunctionUrl.FunctionUrl
 
   TableName:
     Description: DynamoDB table name

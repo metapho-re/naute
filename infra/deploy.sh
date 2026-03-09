@@ -25,6 +25,13 @@ sam deploy --config-file infra/samconfig.toml --no-confirm-changeset \
     "CognitoDomainPrefix=$NAUTE_COGNITO_PREFIX" \
   || echo "No infrastructure changes to deploy, continuing..."
 
+echo "==> Reading GenerateUrl from stack outputs"
+export VITE_GENERATE_URL=$(aws cloudformation describe-stacks \
+  --stack-name "$STACK_NAME" \
+  --query "Stacks[0].Outputs[?OutputKey=='GenerateUrl'].OutputValue" \
+  --output text)
+echo "VITE_GENERATE_URL=$VITE_GENERATE_URL"
+
 echo "==> Building frontend"
 npm run build -w frontend
 

@@ -1,11 +1,6 @@
-import type {
-  CreateNoteRequest,
-  GenerateNoteRequest,
-  UpdateNoteRequest,
-} from "@naute/shared";
+import type { CreateNoteRequest, UpdateNoteRequest } from "@naute/shared";
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
-import { generateNote } from "./ai-service";
 import {
   createNote,
   deleteNote,
@@ -45,13 +40,6 @@ export const handler = async (
     switch (route) {
       case "GET /notes": {
         const result = await listNotes();
-
-        return getSuccessResponse(result);
-      }
-
-      case "POST /notes/generate": {
-        const body = JSON.parse(event.body || "{}") as GenerateNoteRequest;
-        const result = await generateNote(body);
 
         return getSuccessResponse(result);
       }

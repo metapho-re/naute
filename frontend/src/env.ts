@@ -4,4 +4,5 @@ export const env = {
   cognitoClientId: import.meta.env.VITE_COGNITO_CLIENT_ID as string,
   redirectUri: import.meta.env.VITE_REDIRECT_URI as string,
   logoutUri: import.meta.env.VITE_LOGOUT_URI as string,
+  generateUrl: import.meta.env.VITE_GENERATE_URL as string,
 };
