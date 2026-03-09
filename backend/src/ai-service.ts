@@ -56,10 +56,16 @@ export const generateNote = async (
 
   const response = await claudeApiClient.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 4096,
+    max_tokens: 16384,
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: req.prompt }],
   });
+
+  console.log("Claude response stop_reason:", response.stop_reason);
+
+  if (response.stop_reason === "max_tokens") {
+    throw new Error("Claude response truncated");
+  }
 
   const textBlock = response.content.find(
     (block): block is Anthropic.TextBlock => block.type === "text",
