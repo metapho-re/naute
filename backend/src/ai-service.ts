@@ -75,6 +75,8 @@ export const generateNote = async (
     throw new Error("No text response from Claude");
   }
 
+  console.log("Claude response textBlock:", textBlock.text);
+
   let note: GenerateNoteResponse;
 
   try {
