@@ -7,10 +7,7 @@ import { verifyToken } from "./jwt";
 
 const HEARTBEAT_INTERVAL_MS = 10_000;
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "*",
-  "Access-Control-Allow-Headers": "Content-Type,Authorization",
-  "Access-Control-Allow-Methods": "POST,OPTIONS",
+const responseHeaders = {
   "Content-Type": "text/event-stream",
   "Cache-Control": "no-cache",
   Connection: "keep-alive",
@@ -28,7 +25,7 @@ export const handler = awslambda.streamifyResponse(
 
       stream = awslambda.HttpResponseStream.from(responseStream, {
         statusCode: 200,
-        headers: corsHeaders,
+        headers: responseHeaders,
       });
 
       heartbeat = setInterval(() => {
@@ -51,7 +48,7 @@ export const handler = awslambda.streamifyResponse(
       if (!stream) {
         stream = awslambda.HttpResponseStream.from(responseStream, {
           statusCode,
-          headers: corsHeaders,
+          headers: responseHeaders,
         });
       }
 
