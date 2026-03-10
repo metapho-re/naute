@@ -216,17 +216,9 @@ Resources:
       FunctionUrlConfig:
         AuthType: NONE
         InvokeMode: RESPONSE_STREAM
-        Cors:
-          AllowOrigins:
-            - !Sub "https://${DomainName}"
-            - "http://localhost:5173"
-          AllowMethods:
-            - POST
-          AllowHeaders:
-            - Content-Type
-            - Authorization
       Environment:
         Variables:
+          ALLOWED_ORIGIN: !Sub "https://${DomainName}"
           USER_POOL_ID: !Ref UserPool
           USER_POOL_CLIENT_ID: !Ref UserPoolClient
       Policies:
