@@ -2,10 +2,12 @@
 
 A markdown note-taking app with a split-pane editor and live preview — deployed as a serverless app on AWS.
 
+![Naute](assets/naute.png)
+
 ## Features
 
 - 📝 **Split-pane Markdown editor** — CodeMirror editor on the left, live rendered preview on the right
-- 🤖 **AI note generation** — generate structured markdown notes from a prompt using Claude
+- 🤖 **AI-powered notes** — generate notes from a prompt or format raw text into structured markdown, powered by Claude
 - 🔍 **Search, sort & filter** — find notes by title, sort by date or name, filter by tags
 - 🏷️ **Tagging system** — organize notes with tags, filter by multiple tags at once
 - 🔐 **Cognito authentication** — OAuth 2.0 Authorization Code + PKCE with optional TOTP MFA
@@ -125,14 +127,14 @@ Pushes to `main` trigger the GitHub Actions workflow which deploys automatically
 
 All routes are authenticated via Cognito JWT.
 
-| Method   | Path              | Description            |
-| -------- | ----------------- | ---------------------- |
-| `GET`    | `/notes`          | List all notes         |
-| `POST`   | `/notes/create`   | Create a note          |
-| `GET`    | `/notes/{id}`     | Get a note             |
-| `PUT`    | `/notes/{id}`     | Update a note          |
-| `DELETE` | `/notes/{id}`     | Delete a note          |
-| `POST`   | `/notes/generate` | Generate a note via AI |
+| Method   | Path              | Description                                   |
+| -------- | ----------------- | --------------------------------------------- |
+| `GET`    | `/notes`          | List all notes                                |
+| `POST`   | `/notes/create`   | Create a note                                 |
+| `GET`    | `/notes/{id}`     | Get a note                                    |
+| `PUT`    | `/notes/{id}`     | Update a note                                 |
+| `DELETE` | `/notes/{id}`     | Delete a note                                 |
+| `POST`   | `/notes/generate` | Generate or format a note via AI (SSE stream) |
 
 ### Validation
 

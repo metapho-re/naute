@@ -40,14 +40,15 @@ No test framework is configured. There are no test files in the codebase.
 
 ## Architecture
 
-**Shared** (`shared/src/types/`): TypeScript types for `Note`, `NoteSummary`, `CreateNoteRequest`, `UpdateNoteRequest`, `ApiResponse<T>`. All workspaces import from `@naute/shared`.
+**Shared** (`shared/src/types/`): TypeScript types for `Note`, `NoteSummary`, `CreateNoteRequest`, `UpdateNoteRequest`, `AiNoteAction`, `AiNoteRequest`, `AiNoteResponse`, `ApiResponse<T>`. All workspaces import from `@naute/shared`.
 
 **Backend** (`backend/src/`): Node.js 22 Lambda backend split by concern:
 
 - `database.ts` — DynamoDB document client, key helpers, and data access functions (`getNote`, `putNote`, `removeNote`, `getAllNotes`)
 - `errors.ts` — Error classes (`ValidationError`, `NotFoundError`) and validation helpers
 - `notes.ts` — Service functions (`createNote`, `updateNote`, `deleteNote`, `findNote`, `listNotes`)
-- `ai-service.ts` — Claude API integration for note generation; retrieves API key from SSM Parameter Store (`/naute/anthropic-api-key`) with in-memory caching; returns structured JSON (title, content, tags)
+- `ai-service.ts` — Claude API integration for note generation and formatting; retrieves API key from SSM Parameter Store (`/naute/anthropic-api-key`) with in-memory caching; returns structured JSON (title, content, tags)
+- `ai-handler.ts` — Streaming Lambda handler for AI endpoints; uses SSE with heartbeat keep-alive; verifies JWT manually
 - `handler.ts` — Lambda handler (entry point); catches errors by `e.name` — `ValidationError` maps to 400, `NotFoundError` to 404
 
 **Infrastructure** (`infra/`): AWS SAM template and deployment config:
@@ -61,8 +62,8 @@ No test framework is configured. There are no test files in the codebase.
 
 - `auth/` — OAuth 2.0 Authorization Code + PKCE flow with Cognito (sessionStorage for code verifier, module-level variable for refresh token)
 - `services/api.ts` — Typed API client via `createApiClient(getToken)` higher-order function with automatic token injection
-- `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`, `useGenerateNote`)
-- `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace, GenerateNoteDialog
+- `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`, `useAiNote`)
+- `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace, AiNoteDialog
 - `pages/` — CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/highlight.js/DOMPurify preview)
 - `theme/` — Kanagawa theme with light/dark variants and CSS variables
 - `env.ts` — Centralized type-safe access to all `VITE_*` environment variables
