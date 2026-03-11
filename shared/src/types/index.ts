@@ -1,8 +1,9 @@
 export type {
+  AiNoteAction,
+  AiNoteRequest,
+  AiNoteResponse,
   ApiResponse,
   CreateNoteRequest,
-  GenerateNoteRequest,
-  GenerateNoteResponse,
   UpdateNoteRequest,
 } from "./api";
 export type { Note, NoteSummary } from "./note";

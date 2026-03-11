@@ -1,3 +1,8 @@
+const actionConfigurationMap = {
+  format: { label: "Raw text", maxLength: 100_000 },
+  generate: { label: "Prompt", maxLength: 10_000 },
+};
+
 export const TAG_PATTERN = /^[a-z0-9-]+$/;
 
 export class ValidationError extends Error {
@@ -30,13 +35,22 @@ export const validateContent = (content: string): void => {
   }
 };
 
-export const validatePrompt = (prompt: string): void => {
-  if (prompt.trim().length === 0) {
-    throw new ValidationError("Prompt is required.");
+export const validatePayload = (action: string, payload: string): void => {
+  const actionConfiguration =
+    actionConfigurationMap[action as keyof typeof actionConfigurationMap];
+
+  if (!actionConfiguration) {
+    throw new ValidationError(`Invalid action: ${action}`);
   }
 
-  if (prompt.length > 10000) {
-    throw new ValidationError("Prompt must be 10,000 characters or less.");
+  if (payload.trim().length === 0) {
+    throw new ValidationError(`${actionConfiguration.label} is required.`);
+  }
+
+  if (payload.length > actionConfiguration.maxLength) {
+    throw new ValidationError(
+      `${actionConfiguration.label} must be ${actionConfiguration.maxLength.toLocaleString()} characters or less.`,
+    );
   }
 };
 

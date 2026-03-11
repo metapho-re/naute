@@ -1,4 +1,4 @@
-export { GenerateNoteDialog } from "./generate-note-dialog";
+export { AiNoteDialog } from "./ai-note-dialog";
 export { Layout } from "./layout";
 export { Navbar } from "./navbar";
 export { NoteCard } from "./note-card";

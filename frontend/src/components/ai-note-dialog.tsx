@@ -3,35 +3,46 @@ import { type ChangeEvent, type SubmitEvent, useState } from "react";
 import { cn } from "../utils";
 
 interface Props {
+  description: string;
   error: string | null;
-  isGenerating: boolean;
+  isProcessing: boolean;
+  label: string;
+  placeholder: string;
+  processingLabel: string;
+  rows: number;
+  title: string;
   onCancel: () => void;
-  onGenerate: (prompt: string) => void;
+  onSubmit: (payload: string) => void;
 }
 
-export const GenerateNoteDialog = ({
+export const AiNoteDialog = ({
+  description,
   error,
-  isGenerating,
+  isProcessing,
+  label,
+  placeholder,
+  processingLabel,
+  rows,
+  title,
   onCancel,
-  onGenerate,
+  onSubmit,
 }: Props) => {
-  const [prompt, setPrompt] = useState<string>("");
+  const [input, setInput] = useState<string>("");
 
-  const trimmedPrompt = prompt.trim();
+  const trimmedInput = input.trim();
+  const isSubmitDisabled = trimmedInput.length === 0 || isProcessing;
 
-  const handlePromptChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setPrompt(event.target.value);
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(event.target.value);
   };
 
   const handleSubmit = (event: SubmitEvent) => {
     event.preventDefault();
 
-    if (trimmedPrompt.length > 0 && !isGenerating) {
-      onGenerate(trimmedPrompt);
+    if (!isSubmitDisabled) {
+      onSubmit(trimmedInput);
     }
   };
-
-  const isSubmitDisabled = trimmedPrompt.length === 0 || isGenerating;
 
   return (
     <div
@@ -46,20 +57,15 @@ export const GenerateNoteDialog = ({
           "border-edge bg-float shadow-floating",
         )}
       >
-        <h3 className="text-ink mb-3 text-xl font-semibold">
-          Generate with AI
-        </h3>
-        <p className="text-ink-dim mb-5 text-base">
-          Describe the note you want to create. AI will generate a title,
-          content, and tags for you to review.
-        </p>
+        <h3 className="text-ink mb-3 text-xl font-semibold">{title}</h3>
+        <p className="text-ink-dim mb-5 text-base">{description}</p>
         <textarea
           autoFocus
-          disabled={isGenerating}
-          placeholder="e.g. A guide to React hooks with examples..."
-          rows={4}
-          value={prompt}
-          onChange={handlePromptChange}
+          disabled={isProcessing}
+          placeholder={placeholder}
+          rows={rows}
+          value={input}
+          onChange={handleInputChange}
           className={cn(
             "mb-5 w-full resize-none rounded-lg border",
             "px-3.5 py-2.5 text-base transition-colors",
@@ -81,7 +87,7 @@ export const GenerateNoteDialog = ({
         <div className="flex justify-end gap-3">
           <button
             type="button"
-            disabled={isGenerating}
+            disabled={isProcessing}
             onClick={onCancel}
             className={cn(
               "rounded-lg border px-5 py-2.5 text-base font-medium transition-colors",
@@ -100,7 +106,7 @@ export const GenerateNoteDialog = ({
               "disabled:opacity-50",
             )}
           >
-            {isGenerating ? "Generating..." : "Generate"}
+            {isProcessing ? processingLabel : label}
           </button>
         </div>
       </form>

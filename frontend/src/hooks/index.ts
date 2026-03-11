@@ -1,6 +1,6 @@
+export { useAiNote } from "./use-ai-note";
 export { useApiClient } from "./use-api-client";
 export { useDeleteNote } from "./use-delete-note";
-export { useGenerateNote } from "./use-generate-note";
 export { useNote } from "./use-note";
 export { useNoteEditor } from "./use-note-editor";
 export { useNotes } from "./use-notes";

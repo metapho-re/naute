@@ -1,8 +1,8 @@
-import type { GenerateNoteRequest } from "@naute/shared";
+import type { AiNoteRequest } from "@naute/shared";
 import type { APIGatewayProxyEventV2 } from "aws-lambda";
 import type { Writable } from "node:stream";
 
-import { generateNote } from "./ai-service";
+import { processNote } from "./ai-service";
 import { verifyToken } from "./jwt";
 
 const HEARTBEAT_INTERVAL_MS = 10_000;
@@ -32,9 +32,9 @@ export const handler = awslambda.streamifyResponse(
         stream!.write(": heartbeat\n\n");
       }, HEARTBEAT_INTERVAL_MS);
 
-      const body = JSON.parse(event.body || "{}") as GenerateNoteRequest;
+      const body = JSON.parse(event.body || "{}") as AiNoteRequest;
 
-      const data = await generateNote(body);
+      const data = await processNote(body);
 
       stream.write(`data: ${JSON.stringify({ data })}\n\n`);
     } catch (error: unknown) {

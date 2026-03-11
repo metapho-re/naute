@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 
-import { GenerateNoteDialog, Layout, NoteCard } from "../components";
-import { useGenerateNote } from "../hooks";
+import { AiNoteDialog, Layout, NoteCard } from "../components";
+import { useAiNote } from "../hooks";
 import { cn } from "../utils";
 
 import { useNoteListPage } from "./use-note-list-page";
@@ -29,16 +29,28 @@ export const NoteListPage = () => {
   } = useNoteListPage();
 
   const {
-    error: generateError,
-    isGenerateDialogVisible,
-    isGenerating,
-    generate,
-    hideGenerateDialog,
-    showGenerateDialog,
-  } = useGenerateNote();
+    error: formatError,
+    isDialogVisible: isFormatDialogVisible,
+    isProcessing: isFormatting,
+    hideDialog: hideFormatDialog,
+    process: formatNote,
+    showDialog: showFormatDialog,
+  } = useAiNote("format");
 
-  const handleGenerate = async (prompt: string) => {
-    const result = await generate(prompt);
+  const {
+    error: generateError,
+    isDialogVisible: isGenerateDialogVisible,
+    isProcessing: isGenerating,
+    hideDialog: hideGenerateDialog,
+    process: generateNote,
+    showDialog: showGenerateDialog,
+  } = useAiNote("generate");
+
+  const handleAiAction = async (
+    payload: string,
+    process: typeof formatNote,
+  ) => {
+    const result = await process(payload);
 
     if (result) {
       navigate("/notes/new", {
@@ -59,6 +71,7 @@ export const NoteListPage = () => {
       selectedTagNames={selectedTagNames}
       sort={sort}
       tags={tags}
+      onFormatClick={showFormatDialog}
       onGenerateClick={showGenerateDialog}
       onOrderChange={handleOrderChange}
       onSearchChange={handleSearchQueryChange}
@@ -137,12 +150,32 @@ export const NoteListPage = () => {
           ))}
         </div>
       )}
+      {isFormatDialogVisible && (
+        <AiNoteDialog
+          description="Paste your raw note text. AI will structure it into well-formatted markdown with a title, content, and tags for you to review."
+          error={formatError}
+          isProcessing={isFormatting}
+          label="Format"
+          placeholder="Paste your raw, unstructured note text here..."
+          processingLabel="Formatting..."
+          rows={6}
+          title="Format with AI"
+          onCancel={hideFormatDialog}
+          onSubmit={(payload) => handleAiAction(payload, formatNote)}
+        />
+      )}
       {isGenerateDialogVisible && (
-        <GenerateNoteDialog
+        <AiNoteDialog
+          description="Describe the note you want to create. AI will generate a title, content, and tags for you to review."
           error={generateError}
-          isGenerating={isGenerating}
+          isProcessing={isGenerating}
+          label="Generate"
+          placeholder="e.g. A guide to React hooks with examples..."
+          processingLabel="Generating..."
+          rows={4}
+          title="Generate with AI"
           onCancel={hideGenerateDialog}
-          onGenerate={handleGenerate}
+          onSubmit={(payload) => handleAiAction(payload, generateNote)}
         />
       )}
     </Layout>

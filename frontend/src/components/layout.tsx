@@ -11,6 +11,7 @@ interface Props {
   selectedTagNames: string[];
   sort: SortField;
   tags: Tag[];
+  onFormatClick: () => void;
   onGenerateClick: () => void;
   onOrderChange: (order: SortOrder) => void;
   onSearchChange: (query: string) => void;
@@ -26,6 +27,7 @@ export const Layout = ({
   selectedTagNames,
   sort,
   tags,
+  onFormatClick,
   onGenerateClick,
   onOrderChange,
   onSearchChange,
@@ -41,6 +43,7 @@ export const Layout = ({
         selectedTagNames={selectedTagNames}
         sort={sort}
         tags={tags}
+        onFormatClick={onFormatClick}
         onGenerateClick={onGenerateClick}
         onOrderChange={onOrderChange}
         onSearchChange={onSearchChange}

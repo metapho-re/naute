@@ -1,8 +1,8 @@
 import type {
+  AiNoteRequest,
+  AiNoteResponse,
   ApiResponse,
   CreateNoteRequest,
-  GenerateNoteRequest,
-  GenerateNoteResponse,
   Note,
   NoteSummary,
   UpdateNoteRequest,
@@ -13,7 +13,8 @@ import { env } from "../env";
 export interface ApiClient {
   createNote: (data: CreateNoteRequest) => Promise<Note>;
   deleteNote: (id: string) => Promise<void>;
-  generateNote: (data: GenerateNoteRequest) => Promise<GenerateNoteResponse>;
+  formatNote: (payload: string) => Promise<AiNoteResponse>;
+  generateNote: (payload: string) => Promise<AiNoteResponse>;
   getNote: (id: string, signal?: AbortSignal) => Promise<Note>;
   listNotes: (signal?: AbortSignal) => Promise<NoteSummary[]>;
   updateNote: (id: string, data: UpdateNoteRequest) => Promise<Note>;
@@ -43,18 +44,9 @@ export const createApiClient = (
     return json.data as T;
   };
 
-  const createNote = (req: CreateNoteRequest) =>
-    request<Note>("/notes/create", {
-      method: "POST",
-      body: JSON.stringify(req),
-    });
-
-  const deleteNote = (id: string) =>
-    request<void>(`/notes/${id}`, { method: "DELETE" });
-
-  const generateNote = async (
-    req: GenerateNoteRequest,
-  ): Promise<GenerateNoteResponse> => {
+  const streamAiRequest = async (
+    req: AiNoteRequest,
+  ): Promise<AiNoteResponse> => {
     const token = await getToken();
 
     const response = await fetch(env.generateUrl, {
@@ -88,23 +80,38 @@ export const createApiClient = (
     const match = buffer.match(/^data: (.+)$/m);
 
     if (!match) {
-      throw new Error("No data received from generate endpoint");
+      throw new Error("No data received from AI endpoint");
     }
 
-    let apiResponse: ApiResponse<GenerateNoteResponse>;
+    let apiResponse: ApiResponse<AiNoteResponse>;
 
     try {
-      apiResponse = JSON.parse(match[1]) as ApiResponse<GenerateNoteResponse>;
+      apiResponse = JSON.parse(match[1]) as ApiResponse<AiNoteResponse>;
     } catch {
-      throw new Error("Invalid response from generate endpoint");
+      throw new Error("Invalid response from AI endpoint");
     }
 
     if (apiResponse.error) {
       throw new Error(apiResponse.error);
     }
 
-    return apiResponse.data as GenerateNoteResponse;
+    return apiResponse.data as AiNoteResponse;
   };
+
+  const createNote = (req: CreateNoteRequest) =>
+    request<Note>("/notes/create", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+
+  const deleteNote = (id: string) =>
+    request<void>(`/notes/${id}`, { method: "DELETE" });
+
+  const formatNote = (payload: string) =>
+    streamAiRequest({ action: "format", payload });
+
+  const generateNote = (payload: string) =>
+    streamAiRequest({ action: "generate", payload });
 
   const getNote = (id: string, signal?: AbortSignal) =>
     request<Note>(`/notes/${id}`, { signal });
@@ -121,6 +128,7 @@ export const createApiClient = (
   return {
     createNote,
     deleteNote,
+    formatNote,
     generateNote,
     getNote,
     listNotes,

@@ -13,6 +13,7 @@ interface Props {
   selectedTagNames: string[];
   sort: SortField;
   tags: Tag[];
+  onFormatClick: () => void;
   onGenerateClick: () => void;
   onOrderChange: (order: SortOrder) => void;
   onSearchChange: (query: string) => void;
@@ -27,6 +28,7 @@ export const Sidebar = ({
   selectedTagNames,
   sort,
   tags,
+  onFormatClick,
   onGenerateClick,
   onOrderChange,
   onSearchChange,
@@ -62,20 +64,32 @@ export const Sidebar = ({
           "hover:bg-accent-hover transition-colors",
         )}
       >
-        <span className="material-icons-outlined text-lg">note_add</span>
-        New Note
+        <span className="material-icons-outlined text-lg">edit_note</span>
+        Write Note
       </Link>
       <button
         onClick={onGenerateClick}
         className={cn(
-          "mb-5 flex w-full items-center justify-center gap-1.5",
-          "rounded-lg border px-4 py-2.5 text-base font-medium",
-          "border-edge text-ink-dim",
-          "hover:bg-highlight transition-colors",
+          "mb-3 flex w-full items-center justify-center gap-1.5",
+          "rounded-lg px-4 py-2.5 text-base font-medium",
+          "bg-accent text-accent-fg shadow-soft",
+          "hover:bg-accent-hover transition-colors",
         )}
       >
         <span className="material-icons-outlined text-lg">auto_awesome</span>
         Generate with AI
+      </button>
+      <button
+        onClick={onFormatClick}
+        className={cn(
+          "mb-5 flex w-full items-center justify-center gap-1.5",
+          "rounded-lg px-4 py-2.5 text-base font-medium",
+          "bg-accent text-accent-fg shadow-soft",
+          "hover:bg-accent-hover transition-colors",
+        )}
+      >
+        <span className="material-icons-outlined text-lg">auto_fix_high</span>
+        Format with AI
       </button>
       <input
         type="text"
