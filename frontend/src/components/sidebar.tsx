@@ -55,42 +55,44 @@ export const Sidebar = ({
 
   return (
     <div className="flex h-full flex-col p-5">
-      <Link
-        to="/notes/new"
-        className={cn(
-          "mb-3 flex items-center justify-center gap-1.5",
-          "rounded-lg px-4 py-2.5 text-base font-medium",
-          "bg-accent text-accent-fg shadow-soft",
-          "hover:bg-accent-hover transition-colors",
-        )}
-      >
-        <span className="material-icons-outlined text-lg">edit_note</span>
-        Write Note
-      </Link>
-      <button
-        onClick={onGenerateClick}
-        className={cn(
-          "mb-3 flex w-full items-center justify-center gap-1.5",
-          "rounded-lg px-4 py-2.5 text-base font-medium",
-          "bg-accent text-accent-fg shadow-soft",
-          "hover:bg-accent-hover transition-colors",
-        )}
-      >
-        <span className="material-icons-outlined text-lg">auto_awesome</span>
-        Generate with AI
-      </button>
-      <button
-        onClick={onFormatClick}
-        className={cn(
-          "mb-5 flex w-full items-center justify-center gap-1.5",
-          "rounded-lg px-4 py-2.5 text-base font-medium",
-          "bg-accent text-accent-fg shadow-soft",
-          "hover:bg-accent-hover transition-colors",
-        )}
-      >
-        <span className="material-icons-outlined text-lg">auto_fix_high</span>
-        Format with AI
-      </button>
+      <div className="mb-5 flex gap-2">
+        <Link
+          to="/notes/new"
+          className={cn(
+            "flex flex-1 items-center justify-center gap-1.5",
+            "rounded-lg px-3 py-2.5 text-sm font-medium",
+            "bg-accent text-accent-fg shadow-soft",
+            "hover:bg-accent-hover cursor-pointer transition-colors",
+          )}
+        >
+          <span className="material-icons-outlined text-lg">edit_note</span>
+          Write
+        </Link>
+        <button
+          onClick={onGenerateClick}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-1.5",
+            "rounded-lg px-3 py-2.5 text-sm font-medium",
+            "bg-accent text-accent-fg shadow-soft",
+            "hover:bg-accent-hover cursor-pointer transition-colors",
+          )}
+        >
+          <span className="material-icons-outlined text-lg">auto_awesome</span>
+          Generate
+        </button>
+        <button
+          onClick={onFormatClick}
+          className={cn(
+            "flex flex-1 items-center justify-center gap-1.5",
+            "rounded-lg px-3 py-2.5 text-sm font-medium",
+            "bg-accent text-accent-fg shadow-soft",
+            "hover:bg-accent-hover cursor-pointer transition-colors",
+          )}
+        >
+          <span className="material-icons-outlined text-lg">auto_fix_high</span>
+          Format
+        </button>
+      </div>
       <input
         type="text"
         placeholder="Search notes..."
