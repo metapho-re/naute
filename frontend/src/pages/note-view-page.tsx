@@ -5,10 +5,10 @@ import { useNoteViewPage } from "./use-note-view-page";
 export const NoteViewPage = () => {
   const {
     isLoading,
+    markdownHtml,
     note,
     handleNavigateEdit,
     handleNavigateHome,
-    renderMarkdown,
   } = useNoteViewPage();
 
   return (
@@ -72,7 +72,7 @@ export const NoteViewPage = () => {
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div
           className="markdown-preview mx-auto max-w-5xl"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown() }}
+          dangerouslySetInnerHTML={{ __html: markdownHtml }}
         />
       </div>
     </div>

@@ -16,6 +16,7 @@ interface ReturnValue {
   isEditMode: boolean;
   isLoading: boolean;
   isSaving: boolean;
+  previewHtml: string;
   tagInput: string;
   tags: string[];
   title: string;
@@ -27,7 +28,6 @@ interface ReturnValue {
   handleTagInputChange: (value: string) => void;
   handleTagRemove: (tag: string) => void;
   handleTitleChange: (value: string) => void;
-  renderPreview: () => string;
 }
 
 export const useNoteEditorPage = (): ReturnValue => {
@@ -55,7 +55,7 @@ export const useNoteEditorPage = (): ReturnValue => {
     setHasChanges(true);
   }, []);
 
-  const { content, editorRef, renderPreview } = useNoteEditor({
+  const { content, editorRef, previewHtml } = useNoteEditor({
     initialContent,
     onContentChange: handleContentChange,
   });
@@ -153,6 +153,7 @@ export const useNoteEditorPage = (): ReturnValue => {
     isEditMode,
     isLoading,
     isSaving,
+    previewHtml,
     tagInput,
     tags,
     title,
@@ -164,6 +165,5 @@ export const useNoteEditorPage = (): ReturnValue => {
     handleTagInputChange,
     handleTagRemove,
     handleTitleChange,
-    renderPreview,
   };
 };

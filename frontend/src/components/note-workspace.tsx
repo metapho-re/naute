@@ -13,6 +13,7 @@ interface Props {
   isEditMode: boolean;
   isLoading: boolean;
   isSaving: boolean;
+  previewHtml: string;
   tagInput: string;
   tags: string[];
   title: string;
@@ -24,7 +25,6 @@ interface Props {
   onTagInputChange: (value: string) => void;
   onTagRemove: (tag: string) => void;
   onTitleChange: (value: string) => void;
-  renderPreview: () => string;
 }
 
 export const NoteWorkspace = ({
@@ -34,6 +34,7 @@ export const NoteWorkspace = ({
   isEditMode,
   isLoading,
   isSaving,
+  previewHtml,
   tagInput,
   tags,
   title,
@@ -45,7 +46,6 @@ export const NoteWorkspace = ({
   onTagInputChange,
   onTagRemove,
   onTitleChange,
-  renderPreview,
 }: Props) => {
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     onTitleChange(event.target.value);
@@ -179,7 +179,7 @@ export const NoteWorkspace = ({
           )}
         </div>
       </div>
-      <NoteEditor editorRef={editorRef} renderPreview={renderPreview} />
+      <NoteEditor editorRef={editorRef} previewHtml={previewHtml} />
       {isDeleteConfirmVisible && (
         <div
           className={cn(

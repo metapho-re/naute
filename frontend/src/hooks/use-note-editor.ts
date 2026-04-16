@@ -2,12 +2,12 @@ import { markdown as cmMarkdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { Compartment } from "@codemirror/state";
 import { basicSetup, EditorView } from "codemirror";
-import DOMPurify from "dompurify";
 import { kanagawaLotus, kanagawaWave } from "kanagawa-codemirror-theme/src";
-import { marked } from "marked";
 import { type RefObject, useContext, useEffect, useRef, useState } from "react";
 
 import { ThemeContext } from "../theme";
+
+import { useMarkdown } from "./use-markdown";
 
 const themeCompartment = new Compartment();
 
@@ -19,7 +19,7 @@ interface Params {
 interface ReturnValue {
   content: string;
   editorRef: RefObject<HTMLDivElement | null>;
-  renderPreview: () => string;
+  previewHtml: string;
 }
 
 export const useNoteEditor = ({
@@ -104,23 +104,11 @@ export const useNoteEditor = ({
     }
   }, [initialContent]);
 
-  const renderPreview = () => {
-    try {
-      const html = marked.parse(content);
-
-      if (typeof html === "string") {
-        return DOMPurify.sanitize(html);
-      }
-
-      return "";
-    } catch {
-      return "";
-    }
-  };
+  const previewHtml = useMarkdown(content);
 
   return {
     content,
     editorRef,
-    renderPreview,
+    previewHtml,
   };
 };

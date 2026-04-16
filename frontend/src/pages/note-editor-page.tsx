@@ -10,6 +10,7 @@ export const NoteEditorPage = () => {
     isEditMode,
     isLoading,
     isSaving,
+    previewHtml,
     tagInput,
     tags,
     title,
@@ -21,7 +22,6 @@ export const NoteEditorPage = () => {
     handleTagInputChange,
     handleTagRemove,
     handleTitleChange,
-    renderPreview,
   } = useNoteEditorPage();
 
   return (
@@ -32,6 +32,7 @@ export const NoteEditorPage = () => {
       isEditMode={isEditMode}
       isLoading={isLoading}
       isSaving={isSaving}
+      previewHtml={previewHtml}
       tagInput={tagInput}
       tags={tags}
       title={title}
@@ -43,7 +44,6 @@ export const NoteEditorPage = () => {
       onTagInputChange={handleTagInputChange}
       onTagRemove={handleTagRemove}
       onTitleChange={handleTitleChange}
-      renderPreview={renderPreview}
     />
   );
 };
