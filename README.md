@@ -20,7 +20,7 @@ A markdown note-taking app with a split-pane editor and live preview — deploye
 | Layer          | Technology                                                     |
 | -------------- | -------------------------------------------------------------- |
 | Frontend       | React 19, Vite, Tailwind CSS v4, CodeMirror 6                  |
-| Markdown       | marked, highlight.js, DOMPurify                                |
+| Markdown       | marked, Shiki, DOMPurify                                       |
 | AI             | Claude API (Anthropic SDK), SSM Parameter Store for API key    |
 | Backend        | Node.js 22, AWS Lambda (arm64), API Gateway                    |
 | Database       | DynamoDB (single-table design)                                 |

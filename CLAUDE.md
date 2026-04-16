@@ -64,7 +64,7 @@ No test framework is configured. There are no test files in the codebase.
 - `services/api.ts` — Typed API client via `createApiClient(getToken)` higher-order function with automatic token injection
 - `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`, `useAiNote`)
 - `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace, AiNoteDialog
-- `pages/` — CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/highlight.js/DOMPurify preview)
+- `pages/` — CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/Shiki/DOMPurify preview)
 - `theme/` — Kanagawa theme with light/dark variants and CSS variables
 - `env.ts` — Centralized type-safe access to all `VITE_*` environment variables
 
