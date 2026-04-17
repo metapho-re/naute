@@ -3,7 +3,7 @@ import {
   bundledLanguages,
   createHighlighterCore,
   createJavaScriptRegexEngine,
-  HighlighterCore,
+  type HighlighterCore,
 } from "shiki";
 
 let highlighterPromise: Promise<HighlighterCore> | null = null;

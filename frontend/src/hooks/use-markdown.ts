@@ -1,7 +1,7 @@
 import DOMPurify from "dompurify";
 import { Lexer, type Tokens } from "marked";
 import { useContext, useEffect, useMemo, useState } from "react";
-import { HighlighterCore } from "shiki";
+import type { HighlighterCore } from "shiki";
 
 import { ThemeContext } from "../theme";
 import { createMarked, getHighlighter, loadLanguages } from "../utils";
