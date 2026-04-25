@@ -133,9 +133,10 @@ Resources:
             AuthorizationScopes:
               - openid
       Cors:
-        AllowOrigin: "'*'"
+        AllowOrigin: !Sub "'https://${DomainName}'"
         AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
         AllowHeaders: "'Content-Type,Authorization'"
+        AllowCredentials: true
       Domain:
         DomainName: !Sub "api.${DomainName}"
         CertificateArn: !Ref ApiCertificate
@@ -250,6 +251,54 @@ Resources:
           - js=import { createRequire } from 'module'; const require = createRequire(import.meta.url);
         External:
           - "@aws-sdk/client-ssm"
+
+  AuthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: auth-handler.handler
+      CodeUri: ../backend/
+      Environment:
+        Variables:
+          COGNITO_DOMAIN: !Sub "https://${CognitoDomainPrefix}.auth.${AWS::Region}.amazoncognito.com"
+          COGNITO_CLIENT_ID: !Ref UserPoolClient
+      Events:
+        Token:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NauteApi
+            Path: /auth/token
+            Method: POST
+            Auth:
+              Authorizer: NONE
+        Refresh:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NauteApi
+            Path: /auth/refresh
+            Method: POST
+            Auth:
+              Authorizer: NONE
+        Logout:
+          Type: Api
+          Properties:
+            RestApiId: !Ref NauteApi
+            Path: /auth/logout
+            Method: POST
+            Auth:
+              Authorizer: NONE
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: esm
+        Minify: false
+        OutExtension:
+          - .js=.mjs
+        Target: es2022
+        Sourcemap: false
+        EntryPoints:
+          - src/auth-handler.ts
+        Banner:
+          - js=import { createRequire } from 'module'; const require = createRequire(import.meta.url);
 
   # ──────────────────────────────────────────────
   # Frontend Hosting (S3 + CloudFront + Route53)

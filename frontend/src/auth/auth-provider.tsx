@@ -2,6 +2,7 @@ import {
   type PropsWithChildren,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -17,65 +18,92 @@ import {
 
 const CODE_VERIFIER_KEY = "naute_code_verifier";
 
-let refreshToken: string | null = null;
+interface TokenData {
+  access_token: string;
+  id_token: string;
+}
+
+const authRequest = async (
+  path: string,
+  body?: Record<string, string>,
+): Promise<TokenData | null> => {
+  const response = await fetch(`${env.apiUrl}${path}`, {
+    method: "POST",
+    credentials: "include",
+    ...(body
+      ? {
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      : {}),
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const json = (await response.json()) as { data: TokenData };
+
+  return json.data;
+};
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [user, setUser] = useState<string | null>(null);
 
-  const getRefreshedAccessToken = useCallback(async () => {
-    if (!refreshToken) {
-      return null;
+  const applyTokens = useCallback((data: TokenData) => {
+    setAccessToken(data.access_token);
+
+    const payload = getJwtPayload(data.id_token);
+
+    if (typeof payload.email === "string") {
+      setUser(payload.email);
     }
 
-    try {
-      setIsLoading(true);
-
-      const response = await fetch(`${env.cognitoDomain}/oauth2/token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          grant_type: "refresh_token",
-          client_id: env.cognitoClientId,
-          refresh_token: refreshToken,
-        }),
-      });
-
-      if (!response.ok) {
-        refreshToken = null;
-
-        return null;
-      }
-
-      const data = await response.json();
-
-      setAccessToken(data.access_token);
-
-      if (data.id_token) {
-        const payload = getJwtPayload(data.id_token);
-
-        setUser(payload.email as string);
-      }
-
-      setIsAuthenticated(true);
-
-      return data.access_token;
-    } catch {
-      refreshToken = null;
-
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
+    setIsAuthenticated(true);
   }, []);
+
+  const refreshPromiseRef = useRef<Promise<string | null> | null>(null);
+
+  const refreshAccessToken = useCallback(async () => {
+    if (refreshPromiseRef.current) {
+      return refreshPromiseRef.current;
+    }
+
+    const refreshRequest = (async () => {
+      try {
+        const data = await authRequest("/auth/refresh");
+
+        if (!data) {
+          return null;
+        }
+
+        applyTokens(data);
+
+        return data.access_token;
+      } catch {
+        return null;
+      } finally {
+        refreshPromiseRef.current = null;
+      }
+    })();
+
+    refreshPromiseRef.current = refreshRequest;
+
+    return refreshRequest;
+  }, [applyTokens]);
 
   useEffect(() => {
     (async function () {
-      await getRefreshedAccessToken();
+      try {
+        await refreshAccessToken();
+      } finally {
+        setIsLoading(false);
+      }
     })();
-  }, [getRefreshedAccessToken]);
+  }, [refreshAccessToken]);
 
   const login = useCallback(async () => {
     const verifier = getCodeVerifier();
@@ -95,58 +123,47 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     window.location.href = `${env.cognitoDomain}/oauth2/authorize?${params}`;
   }, []);
 
-  const handleCallback = useCallback(async (code: string) => {
-    setIsLoading(true);
+  const handleCallback = useCallback(
+    async (code: string) => {
+      setIsLoading(true);
 
-    try {
-      const verifier = sessionStorage.getItem(CODE_VERIFIER_KEY);
+      try {
+        const verifier = sessionStorage.getItem(CODE_VERIFIER_KEY);
 
-      sessionStorage.removeItem(CODE_VERIFIER_KEY);
+        sessionStorage.removeItem(CODE_VERIFIER_KEY);
 
-      if (!verifier) {
-        throw new Error("Missing code verifier");
-      }
+        if (!verifier) {
+          throw new Error("Missing code verifier");
+        }
 
-      const response = await fetch(`${env.cognitoDomain}/oauth2/token`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          client_id: env.cognitoClientId,
-          redirect_uri: env.redirectUri,
-          code_verifier: verifier,
+        const data = await authRequest("/auth/token", {
           code,
-        }),
-      });
+          code_verifier: verifier,
+          redirect_uri: env.redirectUri,
+        });
 
-      if (!response.ok) {
-        throw new Error("Token exchange failed");
+        if (!data) {
+          throw new Error("Token exchange failed");
+        }
+
+        applyTokens(data);
+      } finally {
+        setIsLoading(false);
       }
+    },
+    [applyTokens],
+  );
 
-      const data = await response.json();
-
-      setAccessToken(data.access_token);
-
-      refreshToken = data.refresh_token;
-
-      if (data.id_token) {
-        const payload = getJwtPayload(data.id_token);
-
-        setUser(payload.email as string);
-      }
-
-      setIsAuthenticated(true);
-    } finally {
-      setIsLoading(false);
+  const logout = useCallback(async () => {
+    try {
+      await authRequest("/auth/logout");
+    } catch {
+      // proceed with local cleanup regardless
     }
-  }, []);
 
-  const logout = () => {
     setAccessToken(null);
     setUser(null);
     setIsAuthenticated(false);
-
-    refreshToken = null;
 
     const params = new URLSearchParams({
       client_id: env.cognitoClientId,
@@ -154,15 +171,15 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     });
 
     window.location.href = `${env.cognitoDomain}/logout?${params}`;
-  };
+  }, []);
 
-  const getAccessToken = async () => {
+  const getAccessToken = useCallback(async () => {
     if (accessToken && !isTokenExpired(accessToken)) {
       return accessToken;
     }
 
-    return getRefreshedAccessToken();
-  };
+    return refreshAccessToken();
+  }, [accessToken, refreshAccessToken]);
 
   return (
     <AuthContext.Provider
