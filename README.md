@@ -57,15 +57,19 @@ npm install
 
 1. Deploy the infrastructure first (see [Deployment](#deployment)) to get Cognito values.
 
-2. Create `frontend/.env.local`:
+2. Create `frontend/.env.local` (see `frontend/.env.example`):
 
    ```
-   VITE_API_URL=https://api.yourdomain.com
-   VITE_COGNITO_DOMAIN=your-prefix.auth.us-east-1.amazoncognito.com
+   VITE_API_URL=/api
+   API_PROXY_TARGET=https://api.yourdomain.com
+   VITE_COGNITO_DOMAIN=https://your-prefix.auth.us-east-1.amazoncognito.com
    VITE_COGNITO_CLIENT_ID=your-client-id
    VITE_REDIRECT_URI=http://localhost:5173/callback
    VITE_LOGOUT_URI=http://localhost:5173
+   VITE_GENERATE_URL=https://your-generate-function-url.lambda-url.us-east-1.on.aws
    ```
+
+   The Vite dev server proxies `/api` requests to `API_PROXY_TARGET` to avoid CORS issues during local development.
 
 3. Build and run:
 
@@ -125,7 +129,7 @@ Pushes to `main` trigger the GitHub Actions workflow which deploys automatically
 
 ## API
 
-All routes are authenticated via Cognito JWT.
+Note routes are authenticated via Cognito JWT. Auth routes are unauthenticated (they proxy Cognito token exchange and manage refresh tokens as HTTP-only cookies).
 
 | Method   | Path              | Description                                   |
 | -------- | ----------------- | --------------------------------------------- |
@@ -135,6 +139,9 @@ All routes are authenticated via Cognito JWT.
 | `PUT`    | `/notes/{id}`     | Update a note                                 |
 | `DELETE` | `/notes/{id}`     | Delete a note                                 |
 | `POST`   | `/notes/generate` | Generate or format a note via AI (SSE stream) |
+| `POST`   | `/auth/token`     | Exchange auth code for tokens (sets cookie)   |
+| `POST`   | `/auth/refresh`   | Refresh access token (reads cookie)           |
+| `POST`   | `/auth/logout`    | Clear refresh token cookie                    |
 
 ### Validation
 

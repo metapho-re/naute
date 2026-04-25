@@ -46,10 +46,11 @@ No test framework is configured. There are no test files in the codebase.
 
 - `database.ts` — DynamoDB document client, key helpers, and data access functions (`getNote`, `putNote`, `removeNote`, `getAllNotes`)
 - `errors.ts` — Error classes (`ValidationError`, `NotFoundError`) and validation helpers
-- `notes.ts` — Service functions (`createNote`, `updateNote`, `deleteNote`, `findNote`, `listNotes`)
+- `note-service.ts` — Service functions (`createNote`, `updateNote`, `deleteNote`, `findNote`, `listNotes`)
+- `note-handler.ts` — Lambda handler for CRUD routes; catches errors by `e.name` — `ValidationError` maps to 400, `NotFoundError` to 404
 - `ai-service.ts` — Claude API integration for note generation and formatting; retrieves API key from SSM Parameter Store (`/naute/anthropic-api-key`) with in-memory caching; returns structured JSON (title, content, tags)
 - `ai-handler.ts` — Streaming Lambda handler for AI endpoints; uses SSE with heartbeat keep-alive; verifies JWT manually
-- `handler.ts` — Lambda handler (entry point); catches errors by `e.name` — `ValidationError` maps to 400, `NotFoundError` to 404
+- `auth-handler.ts` — Lambda handler for auth endpoints (`/auth/token`, `/auth/refresh`, `/auth/logout`); proxies Cognito token exchange and stores refresh token as HTTP-only cookie
 
 **Infrastructure** (`infra/`): AWS SAM template and deployment config:
 
@@ -60,7 +61,7 @@ No test framework is configured. There are no test files in the codebase.
 
 **Frontend** (`frontend/src/`): React 19 + Vite + Tailwind CSS v4 SPA:
 
-- `auth/` — OAuth 2.0 Authorization Code + PKCE flow with Cognito (sessionStorage for code verifier, module-level variable for refresh token)
+- `auth/` — OAuth 2.0 Authorization Code + PKCE flow with Cognito; refresh token stored as HTTP-only cookie via backend `/auth/*` endpoints; access token kept in React state
 - `services/api.ts` — Typed API client via `createApiClient(getToken)` higher-order function with automatic token injection
 - `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`, `useAiNote`)
 - `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace, AiNoteDialog
@@ -70,7 +71,7 @@ No test framework is configured. There are no test files in the codebase.
 
 **Frontend routes** (React Router v7):
 
-- `/` → redirects to `/notes`
+- `/` → LandingPage (login prompt)
 - `/callback` — OAuth callback (unprotected)
 - `/notes` — NoteListPage (protected by `AuthGuard`)
 - `/notes/new` — NoteEditorPage
