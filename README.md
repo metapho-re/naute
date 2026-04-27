@@ -13,6 +13,8 @@ A markdown note-taking app with a split-pane editor and live preview — deploye
 - 🔐 **Cognito authentication** — OAuth 2.0 Authorization Code + PKCE with optional TOTP MFA
 - ⚡ **Serverless backend** — Lambda + API Gateway + DynamoDB, zero idle cost
 - 🚀 **CI/CD** — GitHub Actions deploys on push to `main` via OIDC
+- 📱 **PWA** — installable on mobile and desktop with offline caching
+- 📐 **Responsive design** — adaptive layout from mobile to desktop
 - 🖥️ **CloudFront CDN** — S3-hosted SPA with HTTPS and custom domain
 
 ## Tech Stack

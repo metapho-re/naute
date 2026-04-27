@@ -59,7 +59,7 @@ No test framework is configured. There are no test files in the codebase.
 - `infra/deploy.sh` — build + deploy script (SAM deploy + frontend S3 sync + CloudFront invalidation)
 - Parameters: `DomainName`, `HostedZoneId`, `CognitoDomainPrefix`
 
-**Frontend** (`frontend/src/`): React 19 + Vite + Tailwind CSS v4 SPA:
+**Frontend** (`frontend/src/`): React 19 + Vite + Tailwind CSS v4 PWA:
 
 - `auth/` — OAuth 2.0 Authorization Code + PKCE flow with Cognito; refresh token stored as HTTP-only cookie via backend `/auth/*` endpoints; access token kept in React state
 - `services/api.ts` — Typed API client via `createApiClient(getToken)` higher-order function with automatic token injection
@@ -68,6 +68,7 @@ No test framework is configured. There are no test files in the codebase.
 - `pages/` — CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/Shiki/DOMPurify preview)
 - `theme/` — Kanagawa theme with light/dark variants and CSS variables
 - `env.ts` — Centralized type-safe access to all `VITE_*` environment variables
+- PWA via `vite-plugin-pwa` with auto-update service worker and workbox caching
 
 **Frontend routes** (React Router v7):
 
@@ -106,6 +107,7 @@ Requires `frontend/.env.local` with Cognito values (see `frontend/.env.example`)
 - TypeScript target: ES2022, strict mode, bundler module resolution
 - SAM esbuild bundles Lambda handlers as ESM with AWS SDK externalized
 - Frontend uses `noEmit` — Vite handles the build, TypeScript only type-checks
+- `consistent-type-imports` ESLint rule enforced — use `import type` for type-only imports
 
 ## Frontend Code Style
 
@@ -121,3 +123,4 @@ All frontend files follow the conventions:
 - **Constants**: `UPPER_SNAKE_CASE` for primitives/lookup tables, `camelCase` for object instances
 - **Comments**: Zero comments (except unavoidable `eslint-disable`), code should be self-explanatory.
 - **Barrel exports**: `index.ts` in every directory
+- **Responsive breakpoints**: two-tier — `md` (768px) for mobile↔tablet (sidebar layout, padding), `xl` (1280px) for tablet↔desktop (side-by-side editor/preview)
