@@ -90,11 +90,11 @@ export const NoteWorkspace = ({
       )}
       <div
         className={cn(
-          "flex items-center gap-4 border-b px-8 py-4",
+          "flex items-start gap-4 border-b px-4 py-4 md:px-8",
           "border-edge",
         )}
       >
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
           <input
             type="text"
             value={title}
@@ -102,42 +102,44 @@ export const NoteWorkspace = ({
             placeholder="Note title"
             maxLength={TITLE_MAX_LENGTH}
             className={cn(
-              "min-w-0 shrink-0 border-0 bg-transparent",
+              "min-w-0 border-0 bg-transparent",
               "text-2xl font-bold focus:outline-none",
               "text-ink placeholder:text-ink-faint",
             )}
           />
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className={cn(
-                "flex items-center gap-1",
-                "rounded-full px-3 py-1 text-sm font-medium",
-                "bg-tag text-tag-fg",
-              )}
-            >
-              {tag}
-              <button
-                onClick={handleTagRemoveFactory(tag)}
-                className="text-tag-fg/50 hover:text-tag-fg transition-colors"
+          <div className="flex flex-wrap items-center gap-2">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className={cn(
+                  "flex items-center gap-1",
+                  "rounded-full px-3 py-1 text-sm font-medium",
+                  "bg-tag text-tag-fg",
+                )}
               >
-                &times;
-              </button>
-            </span>
-          ))}
-          <input
-            type="text"
-            value={tagInput}
-            onChange={handleTagInputChange}
-            onKeyDown={handleTagAdd}
-            placeholder="Add tag..."
-            className={cn(
-              "w-24 border-0 bg-transparent text-base focus:outline-none",
-              "text-ink-muted placeholder:text-ink-faint",
-            )}
-          />
+                {tag}
+                <button
+                  onClick={handleTagRemoveFactory(tag)}
+                  className="text-tag-fg/50 hover:text-tag-fg transition-colors"
+                >
+                  &times;
+                </button>
+              </span>
+            ))}
+            <input
+              type="text"
+              value={tagInput}
+              onChange={handleTagInputChange}
+              onKeyDown={handleTagAdd}
+              placeholder="Add tag..."
+              className={cn(
+                "w-24 border-0 bg-transparent text-base focus:outline-none",
+                "text-ink-muted placeholder:text-ink-faint",
+              )}
+            />
+          </div>
         </div>
-        <div className="flex shrink-0 gap-3">
+        <div className="flex shrink-0 gap-3 self-center">
           <button
             onClick={onNavigateHome}
             className={cn(
@@ -188,7 +190,7 @@ export const NoteWorkspace = ({
         >
           <div
             className={cn(
-              "mx-4 min-w-96 rounded-xl border p-8",
+              "mx-4 w-full max-w-96 rounded-xl border p-5 md:p-8",
               "border-edge bg-float shadow-floating",
             )}
           >

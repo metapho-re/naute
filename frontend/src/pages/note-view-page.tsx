@@ -29,22 +29,28 @@ export const NoteViewPage = () => {
           />
         </div>
       )}
-      <div className="border-edge flex items-center gap-4 border-b px-8 py-4">
-        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-3">
-          <h1 className="text-ink text-2xl font-bold">{note?.title}</h1>
-          {note?.tags.map((tag) => (
-            <span
-              key={tag}
-              className={cn(
-                "rounded-full px-3 py-1 text-sm",
-                "font-medium bg-tag text-tag-fg",
-              )}
-            >
-              {tag}
-            </span>
-          ))}
+      <div className="border-edge flex items-start gap-4 border-b p-4 md:px-8">
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          <h1 className="text-ink truncate text-2xl font-bold">
+            {note?.title}
+          </h1>
+          {note?.tags && note.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {note.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-sm",
+                    "font-medium bg-tag text-tag-fg",
+                  )}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="flex shrink-0 gap-3">
+        <div className="flex shrink-0 gap-3 self-center">
           <button
             onClick={handleNavigateHome}
             className={cn(
@@ -69,7 +75,7 @@ export const NoteViewPage = () => {
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto px-8 py-6">
+      <div className="flex-1 overflow-y-auto p-4 md:px-8 md:py-6">
         <div
           className="markdown-preview mx-auto max-w-5xl"
           dangerouslySetInnerHTML={{ __html: markdownHtml }}

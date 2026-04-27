@@ -65,7 +65,7 @@ export const NoteCard = ({ note }: Props) => {
             "flex size-9 items-center justify-center",
             "rounded-lg transition-all",
             "bg-accent/15 text-accent hover:bg-accent/25",
-            "opacity-0 group-hover:opacity-100",
+            "md:opacity-0 md:group-hover:opacity-100",
           )}
           title="Edit"
         >

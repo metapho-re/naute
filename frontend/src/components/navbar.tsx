@@ -13,7 +13,7 @@ export const Navbar = () => {
     <nav
       className={cn(
         "flex items-center justify-between",
-        "border-edge bg-surface border-b px-8 py-3",
+        "border-edge bg-surface border-b px-4 py-3 md:px-8",
       )}
     >
       <Link

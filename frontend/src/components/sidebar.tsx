@@ -55,7 +55,7 @@ export const Sidebar = ({
 
   return (
     <div className="flex h-full flex-col p-5">
-      <div className="mb-5 flex gap-2">
+      <div className="mb-5 flex flex-col gap-2 xl:flex-row">
         <Link
           to="/notes/new"
           className={cn(

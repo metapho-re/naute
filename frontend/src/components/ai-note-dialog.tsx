@@ -53,7 +53,7 @@ export const AiNoteDialog = ({
       <form
         onSubmit={handleSubmit}
         className={cn(
-          "mx-4 w-full max-w-lg rounded-xl border p-8",
+          "mx-4 w-full max-w-lg rounded-xl border p-5 md:p-8",
           "border-edge bg-float shadow-floating",
         )}
       >
