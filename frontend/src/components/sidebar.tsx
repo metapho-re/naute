@@ -54,7 +54,7 @@ export const Sidebar = ({
   };
 
   return (
-    <div className="flex h-full flex-col p-5">
+    <div className="flex flex-col p-5">
       <div className="mb-5 flex flex-col gap-2 xl:flex-row">
         <Link
           to="/notes/new"
@@ -111,7 +111,7 @@ export const Sidebar = ({
         onOrderChange={onOrderChange}
         onSortChange={onSortChange}
       />
-      <div className="flex-1 overflow-auto">
+      <div>
         <h2
           className={cn(
             "mb-3 text-xs font-semibold uppercase tracking-wider",
