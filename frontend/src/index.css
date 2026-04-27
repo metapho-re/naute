@@ -253,10 +253,16 @@ body {
   margin-bottom: 1em;
 }
 
-.markdown-preview ul,
+.markdown-preview ul {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+  list-style-type: disc;
+}
+
 .markdown-preview ol {
   padding-left: 1.5em;
   margin-bottom: 1em;
+  list-style-type: decimal;
 }
 
 .markdown-preview li {
