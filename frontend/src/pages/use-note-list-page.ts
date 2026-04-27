@@ -24,7 +24,7 @@ interface ReturnValue {
 export const useNoteListPage = (): ReturnValue => {
   const [selectedTagNames, setSelectedTagNames] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [sort, setSort] = useState<SortField>("createdAt");
+  const [sort, setSort] = useState<SortField>("updatedAt");
   const [order, setOrder] = useState<SortOrder>("desc");
 
   const { notes, isLoading, error } = useNotes();
