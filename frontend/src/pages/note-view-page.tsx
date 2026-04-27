@@ -29,11 +29,16 @@ export const NoteViewPage = () => {
           />
         </div>
       )}
-      <div className="border-edge flex items-start gap-4 border-b p-4 md:px-8">
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <h1 className="text-ink truncate text-2xl font-bold">
-            {note?.title}
-          </h1>
+      <div className="border-edge flex flex-col gap-2 border-b p-4 md:px-8">
+        <h1
+          className={cn(
+            "text-ink truncate font-bold",
+            "text-[clamp(1.5rem,1rem+2vw,2rem)]",
+          )}
+        >
+          {note?.title}
+        </h1>
+        <div className="flex items-center gap-3">
           {note?.tags && note.tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {note.tags.map((tag) => (
@@ -49,30 +54,30 @@ export const NoteViewPage = () => {
               ))}
             </div>
           )}
-        </div>
-        <div className="flex shrink-0 gap-3 self-center">
-          <button
-            onClick={handleNavigateHome}
-            className={cn(
-              "flex size-9 items-center justify-center",
-              "rounded-lg transition-colors",
-              "bg-accent/15 text-accent hover:bg-accent/25",
-            )}
-            title="Home"
-          >
-            <span className="material-icons-outlined text-xl">home</span>
-          </button>
-          <button
-            onClick={handleNavigateEdit}
-            className={cn(
-              "flex size-9 items-center justify-center",
-              "rounded-lg transition-colors",
-              "bg-accent/15 text-accent hover:bg-accent/25",
-            )}
-            title="Edit"
-          >
-            <span className="material-icons-outlined text-xl">edit</span>
-          </button>
+          <div className="ml-auto flex shrink-0 gap-3">
+            <button
+              onClick={handleNavigateHome}
+              className={cn(
+                "flex size-9 items-center justify-center",
+                "rounded-lg transition-colors",
+                "bg-accent/15 text-accent hover:bg-accent/25",
+              )}
+              title="Home"
+            >
+              <span className="material-icons-outlined text-xl">home</span>
+            </button>
+            <button
+              onClick={handleNavigateEdit}
+              className={cn(
+                "flex size-9 items-center justify-center",
+                "rounded-lg transition-colors",
+                "bg-accent/15 text-accent hover:bg-accent/25",
+              )}
+              title="Edit"
+            >
+              <span className="material-icons-outlined text-xl">edit</span>
+            </button>
+          </div>
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-4 md:px-8 md:py-6">

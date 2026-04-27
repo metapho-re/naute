@@ -90,23 +90,24 @@ export const NoteWorkspace = ({
       )}
       <div
         className={cn(
-          "flex items-start gap-4 border-b px-4 py-4 md:px-8",
+          "flex flex-col gap-2 border-b px-4 py-4 md:px-8",
           "border-edge",
         )}
       >
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <input
-            type="text"
-            value={title}
-            onChange={handleTitleChange}
-            placeholder="Note title"
-            maxLength={TITLE_MAX_LENGTH}
-            className={cn(
-              "min-w-0 border-0 bg-transparent",
-              "text-2xl font-bold focus:outline-none",
-              "text-ink placeholder:text-ink-faint",
-            )}
-          />
+        <input
+          type="text"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="Note title"
+          maxLength={TITLE_MAX_LENGTH}
+          className={cn(
+            "min-w-0 border-0 bg-transparent",
+            "text-[clamp(1.5rem,1rem+2vw,2rem)]",
+            "font-bold focus:outline-none",
+            "text-ink placeholder:text-ink-faint",
+          )}
+        />
+        <div className="flex items-center gap-3">
           <div className="flex flex-wrap items-center gap-2">
             {tags.map((tag) => (
               <span
@@ -138,47 +139,47 @@ export const NoteWorkspace = ({
               )}
             />
           </div>
-        </div>
-        <div className="flex shrink-0 gap-3 self-center">
-          <button
-            onClick={onNavigateHome}
-            className={cn(
-              "flex size-9 items-center justify-center",
-              "rounded-lg transition-colors",
-              "bg-accent/15 text-accent hover:bg-accent/25",
-            )}
-            title="Home"
-          >
-            <span className="material-icons-outlined text-xl">home</span>
-          </button>
-          <button
-            onClick={onSave}
-            disabled={isSaving || !title.trim()}
-            className={cn(
-              "flex size-9 items-center justify-center",
-              "rounded-lg transition-colors",
-              "bg-accent/15 text-accent hover:bg-accent/25",
-              "disabled:opacity-50",
-            )}
-            title="Save"
-          >
-            <span className="material-icons-outlined text-xl">save</span>
-          </button>
-          {isEditMode && (
+          <div className="ml-auto flex shrink-0 gap-3">
             <button
-              onClick={handleDeletionConfirmFactory(true)}
-              disabled={isDeleting}
+              onClick={onNavigateHome}
               className={cn(
                 "flex size-9 items-center justify-center",
                 "rounded-lg transition-colors",
-                "bg-danger/15 text-danger hover:bg-danger/25",
+                "bg-accent/15 text-accent hover:bg-accent/25",
+              )}
+              title="Home"
+            >
+              <span className="material-icons-outlined text-xl">home</span>
+            </button>
+            <button
+              onClick={onSave}
+              disabled={isSaving || !title.trim()}
+              className={cn(
+                "flex size-9 items-center justify-center",
+                "rounded-lg transition-colors",
+                "bg-accent/15 text-accent hover:bg-accent/25",
                 "disabled:opacity-50",
               )}
-              title="Delete"
+              title="Save"
             >
-              <span className="material-icons-outlined text-xl">delete</span>
+              <span className="material-icons-outlined text-xl">save</span>
             </button>
-          )}
+            {isEditMode && (
+              <button
+                onClick={handleDeletionConfirmFactory(true)}
+                disabled={isDeleting}
+                className={cn(
+                  "flex size-9 items-center justify-center",
+                  "rounded-lg transition-colors",
+                  "bg-danger/15 text-danger hover:bg-danger/25",
+                  "disabled:opacity-50",
+                )}
+                title="Delete"
+              >
+                <span className="material-icons-outlined text-xl">delete</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
       <NoteEditor editorRef={editorRef} previewHtml={previewHtml} />
