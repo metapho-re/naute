@@ -21,7 +21,7 @@ const getSetCookieHeader = (refreshToken: string): string =>
     `${COOKIE_NAME}=${refreshToken}`,
     "HttpOnly",
     "Secure",
-    "SameSite=Strict",
+    "SameSite=Lax",
     "Path=/auth",
     `Max-Age=${REFRESH_TOKEN_MAX_AGE}`,
   ].join("; ");
@@ -31,7 +31,7 @@ const getClearCookieHeader = (): string =>
     `${COOKIE_NAME}=`,
     "HttpOnly",
     "Secure",
-    "SameSite=Strict",
+    "SameSite=Lax",
     "Path=/auth",
     "Max-Age=0",
   ].join("; ");
