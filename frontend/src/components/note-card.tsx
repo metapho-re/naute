@@ -63,7 +63,7 @@ export const NoteCard = ({ note }: Props) => {
           )}
           <div className="ml-auto flex shrink-0 items-center gap-3">
             <span className="text-ink-faint text-sm">
-              {getRelativeTimeString(note.updatedAt)}
+              {getRelativeTimeString(note.createdAt)}
             </span>
             <Link
               to={`/notes/${note.id}/edit`}
