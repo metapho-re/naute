@@ -35,6 +35,10 @@ export const createApiClient = (
       },
     });
 
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
     const json: ApiResponse<T> = await response.json();
 
     if (!response.ok || json.error) {
