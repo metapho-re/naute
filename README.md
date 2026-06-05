@@ -1,6 +1,6 @@
 # Naute
 
-A markdown note-taking app with a split-pane editor and live preview — deployed as a serverless app on AWS.
+Naute is a fast, distraction-free markdown note-taking app with a split-pane editor and live preview. Organize your thoughts with tags, search and sort across your library, and let Claude help you draft new notes from a prompt or reshape rough text into clean markdown. Installable as a PWA on any device and backed by a fully serverless AWS stack with zero idle cost.
 
 ![Naute](assets/naute.png)
 
