@@ -128,9 +128,9 @@ export const handler = async (
 
         if (!refreshToken) {
           return {
-            statusCode: 401,
+            statusCode: 200,
             headers: corsHeaders,
-            body: JSON.stringify({ error: "No refresh token" }),
+            body: JSON.stringify({ data: null }),
           };
         }
 
