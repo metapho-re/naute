@@ -49,8 +49,9 @@ No test framework is configured. There are no test files in the codebase.
 - `note-service.ts` — Service functions (`createNote`, `updateNote`, `deleteNote`, `findNote`, `listNotes`)
 - `note-handler.ts` — Lambda handler for CRUD routes; catches errors by `e.name` — `ValidationError` maps to 400, `NotFoundError` to 404
 - `ai-service.ts` — Claude API integration for note generation and formatting; retrieves API key from SSM Parameter Store (`/naute/anthropic-api-key`) with in-memory caching; returns structured JSON (title, content, tags)
-- `ai-handler.ts` — Streaming Lambda handler for AI endpoints; uses SSE with heartbeat keep-alive; verifies JWT manually
+- `ai-handler.ts` — Streaming Lambda handler for AI endpoints; uses SSE with heartbeat keep-alive; verifies JWT via `jwt.ts`
 - `auth-handler.ts` — Lambda handler for auth endpoints (`/auth/token`, `/auth/refresh`, `/auth/logout`); proxies Cognito token exchange and stores refresh token as HTTP-only cookie
+- `jwt.ts` — Cognito JWT verification helper (`verifyToken`) used by the streaming AI handler
 
 **Infrastructure** (`infra/`): AWS SAM template and deployment config:
 
@@ -59,20 +60,23 @@ No test framework is configured. There are no test files in the codebase.
 - `infra/deploy.sh` — build + deploy script (SAM deploy + frontend S3 sync + CloudFront invalidation)
 - Parameters: `DomainName`, `HostedZoneId`, `CognitoDomainPrefix`
 
-**Frontend** (`frontend/src/`): React 19 + Vite + Tailwind CSS v4 PWA:
+**Frontend** (`frontend/src/`): React 19 + Vite + Tailwind CSS v4 PWA, with TanStack Query for server state:
 
 - `auth/` — OAuth 2.0 Authorization Code + PKCE flow with Cognito; refresh token stored as HTTP-only cookie via backend `/auth/*` endpoints; access token kept in React state
 - `services/api.ts` — Typed API client via `createApiClient(getToken)` higher-order function with automatic token injection
-- `hooks/` — Data fetching hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useNoteEditor`, `useAiNote`)
-- `components/` — Layout, Navbar, NoteCard, NoteEditor, NoteWorkspace, AiNoteDialog
-- `pages/` — CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/Shiki/DOMPurify preview)
+- `hooks/` — TanStack Query hooks (`useNotes`, `useNote`, `useSaveNote`, `useDeleteNote`, `useAiNote`), editor/markdown helpers (`useNoteEditor`, `useMarkdown`), the API client hook (`useApiClient`), and shared `query-keys.ts`
+- `components/` — Layout, Navbar, Sidebar, NoteCard, NoteEditor, NoteWorkspace, AiNoteDialog, Dropdown
+- `pages/` — LandingPage, CallbackPage, NoteListPage, NoteViewPage, NoteEditorPage (split-pane: CodeMirror 6 editor + marked/Shiki/DOMPurify preview); each page has a co-located `use-*-page.ts` hook that owns its state and side effects
 - `theme/` — Kanagawa theme with light/dark variants and CSS variables
+- `utils/` — Shared helpers (`cn`, `getRelativeTimeString`, Shiki/marked highlighter setup)
+- `types.ts` — Frontend-only types (`Tag`, `SortField`, `SortOrder`)
 - `env.ts` — Centralized type-safe access to all `VITE_*` environment variables
+- `main.tsx` — Wires `BrowserRouter`, `ThemeProvider`, `AuthProvider`, and `QueryClientProvider`
 - PWA via `vite-plugin-pwa` with auto-update service worker and workbox caching
 
 **Frontend routes** (React Router v7):
 
-- `/` → LandingPage (login prompt)
+- `/` — LandingPage (login prompt, unprotected)
 - `/callback` — OAuth callback (unprotected)
 - `/notes` — NoteListPage (protected by `AuthGuard`)
 - `/notes/new` — NoteEditorPage
@@ -102,7 +106,7 @@ Requires `frontend/.env.local` with Cognito values (see `frontend/.env.example`)
 
 - All packages use ES modules (`"type": "module"`)
 - Tailwind CSS v4: uses `@import "tailwindcss"` (not `@tailwind` directives)
-- Backend validation: title max 200 chars, content max 100KB, max 20 tags, tag pattern `^[a-z0-9-]+$`
+- Backend validation: title max 200 chars, content max 100KB, max 20 tags, tag max 50 chars, tag pattern `^[a-z0-9-]+$`
 - Custom error classes: `ValidationError`, `NotFoundError` in backend services
 - TypeScript target: ES2022, strict mode, bundler module resolution
 - SAM esbuild bundles Lambda handlers as ESM with AWS SDK externalized
