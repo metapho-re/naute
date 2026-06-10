@@ -20,7 +20,7 @@
     "clsx": "^2.1.1",
     "codemirror": "^6.0.0",
     "dompurify": "^3.4.0",
-    "kanagawa-codemirror-theme": "github:metapho-re/kanagawa-codemirror-theme",
+    "kanagawa-codemirror-theme": "github:paccodes/kanagawa-codemirror-theme",
     "marked": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
