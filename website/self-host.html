@@ -319,8 +319,8 @@
         font-family: var(--mono);
         font-size: 10px;
         letter-spacing: 0.16em;
-        color: var(--ink-mute);
-        background: var(--paper-deep);
+        color: var(--paper-deep);
+        background: var(--ink-mute);
         padding: 3px 7px;
         border-radius: 999px;
         border: var(--hair) solid var(--rule);
@@ -499,7 +499,8 @@
         grid-template-columns: 80px 1fr;
         gap: 24px;
         align-items: start;
-        margin-bottom: 28px;
+        max-width: 940px;
+        margin: 0 auto 28px;
       }
 
       .sec-no {
@@ -509,6 +510,7 @@
         color: var(--ink-mute);
         text-transform: uppercase;
         padding-top: 8px;
+        height: 0;
       }
 
       .sec-no .step-num {
@@ -554,6 +556,8 @@
         display: grid;
         grid-template-columns: 80px 1fr;
         gap: 24px;
+        max-width: 940px;
+        margin: 0 auto;
       }
 
       .step-body > .spacer {
@@ -561,7 +565,7 @@
       }
 
       .step-content {
-        max-width: 76ch;
+        max-width: 88ch;
       }
 
       .step-content p {
@@ -703,6 +707,7 @@
           align-items: baseline;
           gap: 12px;
           padding-top: 0;
+          height: auto;
         }
 
         .sec-no .step-num {
@@ -944,7 +949,8 @@
             class="theme-toggle"
             type="button"
             aria-label="Toggle color theme"
-            title="Toggle theme">
+            title="Toggle theme"
+          >
             <svg
               class="moon"
               viewBox="0 0 24 24"
@@ -953,7 +959,8 @@
               stroke-width="1.6"
               stroke-linecap="round"
               stroke-linejoin="round"
-              aria-hidden="true">
+              aria-hidden="true"
+            >
               <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
             </svg>
             <svg
@@ -964,7 +971,8 @@
               stroke-width="1.6"
               stroke-linecap="round"
               stroke-linejoin="round"
-              aria-hidden="true">
+              aria-hidden="true"
+            >
               <circle cx="12" cy="12" r="4" />
               <path
                 d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
@@ -1087,11 +1095,13 @@
               have to land somewhere you control.
             </p>
             <p>
-              Naute is a monorepo with three workspaces — <em>shared</em>,
-              <em>backend</em>, and <em>frontend</em> — plus an
-              <em>infra</em> directory holding the SAM template. The
-              <code class="inline-code">shared</code> package has to be built
-              first because the other two import its types.
+              Naute is a monorepo with three workspaces —
+              <code class="inline-code">shared</code>,
+              <code class="inline-code">backend</code>, and
+              <code class="inline-code">frontend</code> — plus an
+              <code class="inline-code">infra</code> directory holding the SAM
+              template. The <code class="inline-code">shared</code> package has
+              to be built first because the other two import its types.
             </p>
             <!-- prettier-ignore -->
             <div class="code" data-label="shell">
@@ -1106,8 +1116,7 @@
               <span class="ln"><span class="pr">$</span> npm run build -w shared</span>
             </div>
             <p>
-              After this, <code class="inline-code">npm run lint</code>
-              and
+              After this, <code class="inline-code">npm run lint</code> and
               <code class="inline-code">sam validate --lint -t infra/template.yaml</code>
               should both pass — a quick way to confirm your toolchain is wired
               up before you spend any AWS credits.
@@ -1138,7 +1147,7 @@
             <ul>
               <li>
                 <strong>NAUTE_DOMAIN</strong> — the domain Naute will live on.
-                Example: <em>notes.example.com</em>.
+                Example: <code class="inline-code">notes.example.com</code>.
               </li>
               <li>
                 <strong>NAUTE_HOSTED_ZONE_ID</strong> — the Route 53 hosted zone
@@ -1183,9 +1192,10 @@
               <code class="inline-code">./infra/deploy.sh</code> builds shared
               types, builds the SAM application, deploys the stack, then builds
               and syncs the frontend. On this first run only the three
-              <em>NAUTE_*</em> vars from step 3 need to be set — the frontend
-              build inside will produce an incomplete bundle (Cognito values
-              don't exist yet), and we'll replace it in step 5.
+              <code class="inline-code">NAUTE_*</code> vars from step 3 need to
+              be set — the frontend build inside will produce an incomplete
+              bundle (Cognito values don't exist yet), and we'll replace it in
+              step 5.
             </p>
             <!-- prettier-ignore -->
             <div class="code" data-label="shell">
@@ -1221,12 +1231,12 @@
           <div class="spacer"></div>
           <div class="step-content">
             <p>
-              Six <em>VITE_*</em> values get baked into the frontend bundle at
-              build time. The deploy script reads one of them (<code
-                class="inline-code">VITE_GENERATE_URL</code>,
-              the Function URL of the streaming AI Lambda) straight from the
-              stack outputs, so you never set it by hand. The other five are on
-              you: two (<code class="inline-code">VITE_COGNITO_CLIENT_ID</code>,
+              Six <code class="inline-code">VITE_*</code> values get baked into
+              the frontend bundle at build time. The deploy script reads one of
+              them (<code class="inline-code">VITE_GENERATE_URL</code>, the
+              Function URL of the streaming AI Lambda) straight from the stack
+              outputs, so you never set it by hand. The other five are on you:
+              two (<code class="inline-code">VITE_COGNITO_CLIENT_ID</code>,
               <code class="inline-code">VITE_COGNITO_DOMAIN</code>) come from
               the stack you just created; the remaining three are fixed once
               you've chosen a domain.
@@ -1316,10 +1326,10 @@
               <span class="ln"> --temporary-password <span class="st">'TempPass!1'</span></span>
             </div>
             <p>
-              Visit <strong>https://your-domain</strong> and sign in with that
-              email and temporary password. Cognito's hosted UI prompts you to
-              set a permanent password and — if you enabled TOTP — register an
-              authenticator app. After that, you're in.
+              Visit <code class="inline-code">https://your-domain</code> and
+              sign in with that email and temporary password. Cognito's hosted
+              UI prompts you to set a permanent password and — if you enabled
+              TOTP — register an authenticator app. After that, you're in.
             </p>
           </div>
         </div>
@@ -1397,9 +1407,11 @@
               <code class="inline-code">API_PROXY_TARGET</code> in
               <code class="inline-code">.env.local</code> to your deployed API
               host (the <code class="inline-code">ApiUrl</code> output from step
-              5, e.g. <em>https://api.your-domain</em>) — Vite uses it to proxy
-              <code class="inline-code">/api</code> through to your real API
-              Gateway. Without it, requests stay on <em>localhost</em> and 404.
+              5, e.g. <code class="inline-code">https://api.your-domain</code>)
+              — Vite uses it to proxy
+              <code class="inline-code" style="white-space: nowrap">/api</code>
+              through to your real API Gateway. Without it, requests stay on
+              <code class="inline-code">localhost</code> and 404.
             </p>
             <p>
               To push your changes live, run
@@ -1435,15 +1447,17 @@
             </p>
             <p>
               You'll need an IAM role in your AWS account that trusts
-              <em>token.actions.githubusercontent.com</em> and is allowed to
-              assume the same permissions the deploy script uses locally. GitHub
-              publishes the
+              <code class="inline-code">token.actions.githubusercontent.com</code>
+              and is allowed to assume the same permissions the deploy script
+              uses locally. GitHub publishes the
               <a
                 class="inline"
                 target="_blank"
                 rel="noopener noreferrer"
-                href="https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services">
-                exact trust-policy template</a>
+                href="https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services"
+              >
+                exact trust-policy template
+              </a>
               for this — paste it in, scope it to your repo, attach a deploy
               policy, and copy the role ARN.
             </p>
@@ -1487,8 +1501,8 @@
                 <h4><em>VITE_API_URL</em></h4>
                 <p>
                   The API base URL the built frontend talks to — usually
-                  <code class="inline-code">/api</code> if you front it through
-                  CloudFront.
+                  <code class="inline-code" style="white-space: nowrap">/api</code>
+                  if you front it through CloudFront.
                 </p>
               </div>
               <div class="prereq">
@@ -1525,8 +1539,9 @@
               </div>
             </div>
             <p class="callout">
-              The <em>VITE_*</em> values are baked into the frontend bundle at
-              build time, so changing one means re-running the workflow (or
+              The <code class="inline-code">VITE_*</code> values are baked into
+              the frontend bundle at build time, so changing one means
+              re-running the workflow (or
               <code class="inline-code">./infra/deploy.sh</code>) to produce a
               fresh build.
             </p>
@@ -1551,7 +1566,10 @@
             href="https://github.com/paccodes/naute"
             target="_blank"
             rel="noopener noreferrer"
-            class="btn primary">View the repo →</a>
+            class="btn primary"
+          >
+            View the repo →
+          </a>
           <a href="./index.html" class="btn ghost">Back to home</a>
         </div>
       </section>
@@ -1568,17 +1586,24 @@
           </p>
         </div>
         <div
-          style="display: flex; gap: 56px; flex-wrap: wrap; align-items: center">
+          style="display: flex; gap: 56px; flex-wrap: wrap; align-items: center"
+        >
           <div class="col">
             <h6>Project</h6>
             <a
               href="https://github.com/paccodes/naute"
               target="_blank"
-              rel="noopener noreferrer">GitHub</a>
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
             <a
               href="https://github.com/paccodes/naute/issues"
               target="_blank"
-              rel="noopener noreferrer">Issues</a>
+              rel="noopener noreferrer"
+            >
+              Issues
+            </a>
           </div>
           <div class="col">
             <h6>Docs</h6>
@@ -1586,7 +1611,10 @@
             <a
               href="https://github.com/paccodes/naute/blob/main/LICENSE"
               target="_blank"
-              rel="noopener noreferrer">License (MIT)</a>
+              rel="noopener noreferrer"
+            >
+              License (MIT)
+            </a>
           </div>
         </div>
       </div>
