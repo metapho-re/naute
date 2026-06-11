@@ -1,0 +1,2204 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Naute — a still place for your notes.</title>
+    <meta
+      name="description"
+      content="Naute is a free, open-source markdown notebook. A split-pane editor, the gentle company of an AI, and a serverless backend that costs nothing while it sleeps."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="canonical" href="https://naute.pac.codes/" />
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Naute" />
+    <meta
+      name="theme-color"
+      content="#efe7d2"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#1f1f28"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Naute" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Naute — a still place for your notes." />
+    <meta
+      property="og:description"
+      content="Naute is a free, open-source markdown notebook. A split-pane editor, the gentle company of an AI, and a serverless backend that costs nothing while it sleeps."
+    />
+    <meta property="og:url" content="https://naute.pac.codes/" />
+    <meta
+      property="og:image"
+      content="https://naute.pac.codes/assets/naute-dark.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="Naute split-pane markdown editor with live preview."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Naute — a still place for your notes."
+    />
+    <meta
+      name="twitter:description"
+      content="Naute is a free, open-source markdown notebook. A split-pane editor, the gentle company of an AI, and a serverless backend that costs nothing while it sleeps."
+    />
+    <meta
+      name="twitter:image"
+      content="https://naute.pac.codes/assets/naute-dark.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Naute split-pane markdown editor with live preview."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem("naute-theme");
+
+          if (theme === "dark" || theme === "light") {
+            document.documentElement.setAttribute("data-theme", theme);
+          }
+        } catch (_) {}
+      })();
+    </script>
+    <style>
+      :root {
+        --paper: #efe7d2;
+        --paper-warm: #ebe2c9;
+        --paper-deep: #e2d8b8;
+        --ink: #1a1a22;
+        --ink-soft: #2a2935;
+        --ink-mute: #5a5868;
+
+        --wave: #4d699b;
+        --wave-deep: #15203a;
+
+        --vermillion: #b8413a;
+        --gold: #b88a4a;
+        --sage: #6a8056;
+        --plum: #8a7aa8;
+
+        --hair: 0.5px;
+        --rule: rgba(26, 26, 34, 0.18);
+        --rule-soft: rgba(26, 26, 34, 0.08);
+
+        --nav-bg: rgba(239, 231, 210, 0.78);
+        --feature-hover: rgba(255, 252, 240, 0.55);
+        --bubble-ai-bg: rgba(35, 49, 72, 0.05);
+        --stamp-bg: rgba(239, 231, 210, 0.6);
+        --noise-blend: multiply;
+        --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.09  0 0 0 0 0.07  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        --wash:
+          radial-gradient(
+            1100px 600px at 88% -10%,
+            rgba(35, 49, 72, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 700px at -8% 30%,
+            rgba(184, 65, 58, 0.06),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 500px at 50% 120%,
+            rgba(35, 49, 72, 0.12),
+            transparent 60%
+          );
+
+        --win-bg: #1f1f28;
+        --win-bg-soft: #16161d;
+        --win-border: #0d0d12;
+        --win-fg: #dcd7ba;
+        --win-fg-soft: #c8c093;
+        --win-fg-mute: #727169;
+        --win-gutter: #54546d;
+        --win-caret: #ffa066;
+        --win-inset: rgba(255, 255, 255, 0.04);
+        --win-blue: #7e9cd8;
+        --win-aqua: #7fb4ca;
+        --win-green: #98bb6c;
+        --win-purple: #957fb8;
+        --win-gold: #c0a36e;
+        --win-red: #e46876;
+        --win-chip-bg: rgba(126, 156, 216, 0.12);
+
+        --serif: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --mono:
+          "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        --jp: "Hiragino Mincho ProN", "Yu Mincho", serif;
+      }
+
+      html[data-theme="dark"] {
+        --paper: #1f1f28;
+        --paper-warm: #2a2a37;
+        --paper-deep: #16161d;
+        --ink: #dcd7ba;
+        --ink-soft: #c8c093;
+        --ink-mute: #8a877a;
+
+        --wave: #7e9cd8;
+        --wave-deep: #a3d4d5;
+
+        --vermillion: #e46876;
+        --gold: #e6c384;
+        --sage: #98bb6c;
+        --plum: #957fb8;
+
+        --rule: rgba(220, 215, 186, 0.14);
+        --rule-soft: rgba(220, 215, 186, 0.06);
+
+        --nav-bg: rgba(31, 31, 40, 0.78);
+        --feature-hover: rgba(220, 215, 186, 0.04);
+        --bubble-ai-bg: rgba(126, 156, 216, 0.08);
+        --stamp-bg: rgba(22, 22, 29, 0.55);
+        --noise-blend: screen;
+        --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.9  0 0 0 0 0.82  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        --wash:
+          radial-gradient(
+            1100px 600px at 88% -10%,
+            rgba(126, 156, 216, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 700px at -8% 30%,
+            rgba(228, 104, 118, 0.08),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 500px at 50% 120%,
+            rgba(126, 156, 216, 0.1),
+            transparent 60%
+          );
+
+        --win-bg: #f2ecbc;
+        --win-bg-soft: #e5dccd;
+        --win-border: #c5bb8e;
+        --win-fg: #545464;
+        --win-fg-soft: #6b6b78;
+        --win-fg-mute: #8a8980;
+        --win-gutter: #b0a886;
+        --win-caret: #cc6d00;
+        --win-inset: rgba(0, 0, 0, 0.04);
+        --win-blue: #4d699b;
+        --win-aqua: #597b75;
+        --win-green: #6f894e;
+        --win-purple: #624c83;
+        --win-gold: #836f4a;
+        --win-red: #c84053;
+        --win-chip-bg: rgba(77, 105, 155, 0.14);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]):not([data-theme="dark"]) {
+          --paper: #1f1f28;
+          --paper-warm: #2a2a37;
+          --paper-deep: #16161d;
+          --ink: #dcd7ba;
+          --ink-soft: #c8c093;
+          --ink-mute: #8a877a;
+
+          --wave: #7e9cd8;
+          --wave-deep: #a3d4d5;
+
+          --vermillion: #e46876;
+          --gold: #e6c384;
+          --sage: #98bb6c;
+          --plum: #957fb8;
+
+          --rule: rgba(220, 215, 186, 0.14);
+          --rule-soft: rgba(220, 215, 186, 0.06);
+
+          --nav-bg: rgba(31, 31, 40, 0.78);
+          --feature-hover: rgba(220, 215, 186, 0.04);
+          --bubble-ai-bg: rgba(126, 156, 216, 0.08);
+          --stamp-bg: rgba(22, 22, 29, 0.55);
+          --noise-blend: screen;
+          --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.9  0 0 0 0 0.82  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+          --wash:
+            radial-gradient(
+              1100px 600px at 88% -10%,
+              rgba(126, 156, 216, 0.16),
+              transparent 60%
+            ),
+            radial-gradient(
+              900px 700px at -8% 30%,
+              rgba(228, 104, 118, 0.08),
+              transparent 60%
+            ),
+            radial-gradient(
+              700px 500px at 50% 120%,
+              rgba(126, 156, 216, 0.1),
+              transparent 60%
+            );
+
+          --win-bg: #f2ecbc;
+          --win-bg-soft: #e5dccd;
+          --win-border: #c5bb8e;
+          --win-fg: #545464;
+          --win-fg-soft: #6b6b78;
+          --win-fg-mute: #8a8980;
+          --win-gutter: #b0a886;
+          --win-caret: #cc6d00;
+          --win-inset: rgba(0, 0, 0, 0.04);
+          --win-blue: #4d699b;
+          --win-aqua: #597b75;
+          --win-green: #6f894e;
+          --win-purple: #624c83;
+          --win-gold: #836f4a;
+          --win-red: #c84053;
+          --win-chip-bg: rgba(77, 105, 155, 0.14);
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 14;
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 1.55;
+        overflow-x: hidden;
+        transition:
+          background-color 0.4s ease,
+          color 0.4s ease;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.35;
+        mix-blend-mode: var(--noise-blend);
+        background-image: var(--noise);
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: var(--wash);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      ::selection {
+        background: var(--wave);
+        color: var(--paper);
+      }
+
+      .shell {
+        position: relative;
+        z-index: 2;
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 0 clamp(20px, 4vw, 56px);
+      }
+
+      nav.top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(8px) saturate(115%);
+        -webkit-backdrop-filter: blur(8px) saturate(115%);
+        background: var(--nav-bg);
+        border-bottom: var(--hair) solid var(--rule);
+        transition: background-color 0.4s ease;
+      }
+
+      .nav-inner {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 14px clamp(20px, 4vw, 56px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .wordmark {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font-family: var(--serif);
+        font-weight: 500;
+        font-size: 22px;
+        font-variation-settings: "opsz" 30;
+        letter-spacing: -0.01em;
+      }
+
+      .wordmark .glyph {
+        font-family: var(--jp);
+        color: var(--vermillion);
+        font-size: 19px;
+        position: relative;
+        top: -1px;
+      }
+
+      .wordmark .ver {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--ink-mute);
+        background: var(--paper-deep);
+        padding: 3px 7px;
+        border-radius: 999px;
+        border: var(--hair) solid var(--rule);
+        margin-left: 6px;
+        transform: translateY(-2px);
+        font-variation-settings: normal;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+
+      .nav-links a {
+        position: relative;
+        padding: 6px 0;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--vermillion);
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: currentColor;
+        transform: scaleX(0);
+        transform-origin: right center;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-links a:hover::after {
+        transform: scaleX(1);
+        transform-origin: left center;
+      }
+
+      .theme-toggle {
+        appearance: none;
+        background: transparent;
+        border: 1px solid var(--rule);
+        color: var(--ink);
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition:
+          border-color 0.25s ease,
+          background 0.25s ease,
+          color 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--ink);
+        background: var(--paper-warm);
+        transform: rotate(15deg);
+      }
+
+      .theme-toggle svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .theme-toggle .sun {
+        display: none;
+      }
+
+      html[data-theme="dark"] .theme-toggle .sun {
+        display: block;
+      }
+
+      html[data-theme="dark"] .theme-toggle .moon {
+        display: none;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]):not([data-theme="dark"])
+          .theme-toggle
+          .sun {
+          display: block;
+        }
+
+        html:not([data-theme="light"]):not([data-theme="dark"])
+          .theme-toggle
+          .moon {
+          display: none;
+        }
+      }
+
+      @media (max-width: 780px) {
+        .nav-links a {
+          display: none;
+        }
+      }
+
+      .hero {
+        padding: clamp(60px, 10vh, 120px) 0 clamp(40px, 8vh, 80px);
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: clamp(28px, 5vw, 72px);
+        align-items: center;
+        position: relative;
+      }
+
+      @media (max-width: 980px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 32px;
+      }
+
+      .eyebrow .bar {
+        flex: 0 0 56px;
+        height: 1px;
+        background: var(--ink-mute);
+      }
+
+      .eyebrow .red {
+        color: var(--vermillion);
+      }
+
+      h1.headline {
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 72;
+        font-weight: 350;
+        font-size: clamp(54px, 9.4vw, 138px);
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        margin: 0;
+        color: var(--ink);
+      }
+
+      h1.headline em {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 1.04em;
+        color: var(--wave);
+        letter-spacing: -0.01em;
+        position: relative;
+      }
+
+      h1.headline em::after {
+        content: "";
+        position: absolute;
+        left: 4%;
+        right: 4%;
+        bottom: 0.06em;
+        height: 0.05em;
+        background: var(--vermillion);
+        opacity: 0.7;
+        transform: scaleX(0);
+        transform-origin: left center;
+        animation: under 1.2s cubic-bezier(0.7, 0, 0.2, 1) 1.4s forwards;
+      }
+
+      @keyframes under {
+        to {
+          transform: scaleX(1);
+        }
+      }
+
+      .headline .word {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(0.5em);
+        animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+      }
+
+      .headline .word:nth-of-type(1) {
+        animation-delay: 0.05s;
+      }
+
+      .headline .word:nth-of-type(2) {
+        animation-delay: 0.2s;
+      }
+
+      .headline .word:nth-of-type(3) {
+        animation-delay: 0.35s;
+      }
+
+      @keyframes rise {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .lede {
+        margin: 32px 0 0;
+        max-width: 36ch;
+        font-size: clamp(16px, 1.6vw, 19px);
+        line-height: 1.55;
+        color: var(--ink-soft);
+        font-variation-settings: "opsz" 14;
+      }
+
+      .lede em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--ink);
+      }
+
+      .actions {
+        margin-top: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .btn {
+        font-family: var(--serif);
+        font-size: 16px;
+        padding: 14px 22px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.25s ease,
+          background 0.25s ease;
+      }
+
+      .btn.primary {
+        background: var(--ink);
+        color: var(--paper);
+        border: 1px solid var(--ink);
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.04) inset,
+          0 6px 20px -8px rgba(26, 26, 34, 0.4);
+      }
+
+      .btn.primary:hover {
+        background: var(--wave-deep);
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px -10px rgba(35, 49, 72, 0.55);
+      }
+
+      .btn.ghost {
+        border: 1px solid var(--rule);
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .btn.ghost:hover {
+        background: var(--paper-warm);
+        border-color: var(--ink);
+      }
+
+      .btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .btn .arrow {
+        transition: transform 0.25s ease;
+      }
+
+      .btn:hover .arrow {
+        transform: translateX(3px);
+      }
+
+      .meta-row {
+        margin-top: 28px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 24px 32px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+      }
+
+      .meta-row span {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .meta-row .dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--ink-mute);
+      }
+
+      .meta-row span:nth-child(1) .dot {
+        background: var(--sage);
+      }
+
+      .meta-row span:nth-child(2) .dot {
+        background: var(--wave);
+      }
+
+      .meta-row span:nth-child(3) .dot {
+        background: var(--gold);
+      }
+
+      .meta-row span:nth-child(4) .dot {
+        background: var(--plum);
+      }
+
+      .meta-row span:nth-child(5) .dot {
+        background: var(--vermillion);
+      }
+
+      .hero-side {
+        position: relative;
+        perspective: 1600px;
+      }
+
+      .stamp {
+        position: absolute;
+        top: -22px;
+        right: -10px;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        border: 1.5px solid var(--vermillion);
+        color: var(--vermillion);
+        display: grid;
+        place-items: center;
+        font-family: var(--jp);
+        font-size: 28px;
+        animation: spin 32s linear infinite;
+        z-index: 4;
+        background: var(--stamp-bg);
+        box-shadow: inset 0 0 0 4px rgba(184, 65, 58, 0.08);
+      }
+
+      .stamp::before {
+        content: "";
+        position: absolute;
+        inset: 6px;
+        border-radius: 50%;
+        border: 0.5px dashed var(--vermillion);
+        opacity: 0.6;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .window {
+        position: relative;
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--win-bg);
+        color: var(--win-fg);
+        box-shadow:
+          0 0 0 1px var(--rule),
+          0 1px 0 var(--win-inset) inset,
+          0 30px 60px -30px rgba(0, 0, 0, 0.55),
+          0 60px 120px -40px rgba(35, 49, 72, 0.35);
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 1.6;
+        transform: rotate(-1.2deg);
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .window:hover {
+        transform: rotate(0deg) translateY(-2px);
+      }
+
+      .window .appbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 11px 16px;
+        background: var(--win-bg-soft);
+        border-bottom: 1px solid var(--win-border);
+      }
+
+      .window .appbar .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 24;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--win-fg);
+        letter-spacing: -0.005em;
+      }
+
+      .window .appbar .brand .boat {
+        width: 18px;
+        height: 18px;
+        color: var(--win-purple);
+      }
+
+      .window .appbar .ctrls {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .window .appbar .ctrls svg {
+        width: 16px;
+        height: 16px;
+        color: var(--win-gold);
+        opacity: 0.9;
+      }
+
+      .window .appbar .ctrls .logout {
+        color: var(--win-red);
+        opacity: 1;
+      }
+
+      .pane {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: 380px;
+      }
+
+      .editor {
+        padding: 14px 16px;
+        background: var(--win-bg);
+        border-right: 1px solid var(--win-border);
+        overflow: hidden;
+      }
+
+      .editor .gutter {
+        color: var(--win-gutter);
+        margin-right: 12px;
+        user-select: none;
+        display: inline-block;
+        width: 2ch;
+        text-align: right;
+      }
+
+      .editor pre {
+        margin: 0;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        line-height: 1.7;
+        color: var(--win-fg);
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      .editor .line {
+        display: block;
+        padding-left: calc(2ch + 12px);
+        text-indent: calc(-2ch - 12px);
+      }
+
+      .h-h {
+        color: var(--win-blue);
+        font-weight: 700;
+      }
+
+      .h-h2 {
+        color: var(--win-aqua);
+        font-weight: 600;
+      }
+
+      .h-bul {
+        color: var(--win-gold);
+      }
+
+      .h-bq {
+        color: var(--win-purple);
+      }
+
+      .h-comment {
+        color: var(--win-fg-mute);
+      }
+
+      .h-key {
+        color: var(--win-purple);
+      }
+
+      .h-str {
+        color: var(--win-green);
+      }
+
+      .h-fn {
+        color: var(--win-blue);
+      }
+
+      .h-punct {
+        color: var(--win-fg-mute);
+      }
+
+      .caret {
+        display: inline-block;
+        width: 8px;
+        height: 1.05em;
+        background: var(--win-caret);
+        vertical-align: text-bottom;
+        margin-left: 1px;
+        animation: blink 1.05s steps(2, end) infinite;
+      }
+
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .preview {
+        background: var(--win-bg);
+        padding: 16px 18px 20px;
+        color: var(--win-fg);
+        font-family: var(--serif);
+        font-size: 13.5px;
+        line-height: 1.55;
+        overflow: hidden;
+      }
+
+      .preview h1 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        font-weight: 500;
+        color: var(--win-fg);
+        letter-spacing: -0.01em;
+      }
+
+      .preview h2 {
+        margin: 18px 0 6px;
+        font-size: 14px;
+        color: var(--win-gold);
+        font-weight: 500;
+        font-family: var(--mono);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .preview p {
+        margin: 0 0 10px;
+        color: var(--win-fg-soft);
+      }
+
+      .preview ul {
+        margin: 0 0 10px;
+        padding-left: 18px;
+        color: var(--win-fg-soft);
+      }
+
+      .preview blockquote {
+        margin: 12px 0;
+        padding: 4px 0 4px 12px;
+        border-left: 2px solid var(--win-purple);
+        color: var(--win-fg-soft);
+        font-style: italic;
+        font-family: var(--serif);
+        font-size: 14px;
+      }
+
+      .preview .code {
+        margin: 10px 0 0;
+        background: var(--win-bg-soft);
+        padding: 10px 12px;
+        border-radius: 6px;
+        font-family: var(--mono);
+        font-size: 11.5px;
+        line-height: 1.6;
+        color: var(--win-fg-soft);
+        border: 1px solid var(--win-border);
+      }
+
+      .preview .tags {
+        margin: 0 0 14px;
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .preview .tags span {
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 3px 8px;
+        background: var(--win-chip-bg);
+        color: var(--win-aqua);
+        border-radius: 999px;
+        letter-spacing: 0.04em;
+      }
+
+      @media (max-width: 720px) {
+        .pane {
+          grid-template-columns: 1fr;
+        }
+
+        .editor {
+          border-right: none;
+          border-bottom: 1px solid var(--win-border);
+          min-height: 200px;
+        }
+
+        .preview {
+          min-height: 220px;
+        }
+
+        .stamp {
+          display: none;
+        }
+      }
+
+      section {
+        position: relative;
+        padding: clamp(60px, 12vh, 140px) 0;
+        border-top: var(--hair) solid var(--rule);
+      }
+
+      .sec-head {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 24px;
+        align-items: start;
+        margin-bottom: 48px;
+      }
+
+      .sec-no {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        padding-top: 12px;
+      }
+
+      .sec-no .roman {
+        display: block;
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--vermillion);
+        font-size: 26px;
+        margin-bottom: 4px;
+        letter-spacing: 0;
+      }
+
+      .sec-title {
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 72;
+        font-weight: 350;
+        font-size: clamp(34px, 5vw, 64px);
+        line-height: 1;
+        letter-spacing: -0.025em;
+        margin: 0;
+        color: var(--ink);
+      }
+
+      .sec-title em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+        font-size: 1.03em;
+      }
+
+      .sec-sub {
+        margin-top: 18px;
+        max-width: 64ch;
+        color: var(--ink-soft);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0;
+        border-top: var(--hair) solid var(--rule);
+        border-left: var(--hair) solid var(--rule);
+      }
+
+      @media (max-width: 900px) {
+        .features {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 560px) {
+        .features {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .f {
+        padding: 30px 28px 34px;
+        border-right: var(--hair) solid var(--rule);
+        border-bottom: var(--hair) solid var(--rule);
+        position: relative;
+        background: transparent;
+        transition: background 0.3s ease;
+      }
+
+      .f:hover {
+        background: var(--feature-hover);
+      }
+
+      .f .num {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        color: var(--vermillion);
+        text-transform: uppercase;
+      }
+
+      .f .ico {
+        margin: 14px 0 18px;
+        width: 36px;
+        height: 36px;
+        color: var(--wave);
+      }
+
+      .f h3 {
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 40;
+        font-weight: 450;
+        font-size: 23px;
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+        margin: 0 0 10px;
+        color: var(--ink);
+      }
+
+      .f h3 em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .f p {
+        margin: 0;
+        color: var(--ink-soft);
+        font-size: 15px;
+        line-height: 1.55;
+      }
+
+      .f .tag {
+        position: absolute;
+        right: 18px;
+        top: 22px;
+        font-family: var(--jp);
+        font-size: 14px;
+        color: var(--ink-mute);
+        opacity: 0.55;
+      }
+
+      .ai-wrap {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        gap: clamp(28px, 5vw, 64px);
+        align-items: center;
+      }
+
+      @media (max-width: 900px) {
+        .ai-wrap {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .ai-copy h2 {
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 72;
+        font-weight: 350;
+        font-size: clamp(34px, 5vw, 56px);
+        line-height: 1;
+        letter-spacing: -0.025em;
+        margin: 0 0 20px;
+      }
+
+      .ai-copy h2 em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .ai-copy p {
+        color: var(--ink-soft);
+        font-size: 17px;
+        line-height: 1.6;
+        max-width: 44ch;
+      }
+
+      .ai-copy ul {
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 15.5px;
+        color: var(--ink);
+      }
+
+      .ai-copy ul li {
+        padding: 14px 0;
+        display: grid;
+        grid-template-columns: 26px 1fr;
+        gap: 14px;
+        border-top: var(--hair) solid var(--rule-soft);
+      }
+
+      .ai-copy ul li:last-child {
+        border-bottom: var(--hair) solid var(--rule-soft);
+      }
+
+      .ai-copy ul li b {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--vermillion);
+        font-size: 18px;
+        line-height: 1;
+        padding-top: 2px;
+      }
+
+      .dialog {
+        background: var(--paper-warm);
+        border: 1px solid var(--rule);
+        border-radius: 16px;
+        padding: 22px;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.4) inset,
+          0 30px 60px -32px rgba(35, 49, 72, 0.3);
+        position: relative;
+      }
+
+      .dialog::before {
+        content: "AI · dialog";
+        position: absolute;
+        top: -10px;
+        left: 22px;
+        background: var(--paper);
+        padding: 0 10px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+      }
+
+      .bubble {
+        margin: 12px 0;
+        display: flex;
+        gap: 12px;
+      }
+
+      .bubble .who {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        min-width: 70px;
+        padding-top: 4px;
+      }
+
+      .bubble .body {
+        flex: 1;
+        font-size: 15.5px;
+        line-height: 1.55;
+      }
+
+      .bubble.user .body {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+        font-size: 18px;
+      }
+
+      .bubble.ai .body {
+        background: var(--bubble-ai-bg);
+        border-left: 2px solid var(--vermillion);
+        padding: 12px 14px;
+        border-radius: 0 8px 8px 0;
+        color: var(--ink);
+      }
+
+      .bubble.ai .body h4 {
+        margin: 0 0 6px;
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .bubble.ai .body .small {
+        margin-top: 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--ink-mute);
+        letter-spacing: 0.08em;
+      }
+
+      .typing {
+        display: inline-block;
+        width: 7px;
+        height: 1em;
+        background: var(--ink);
+        vertical-align: -2px;
+        margin-left: 3px;
+        animation: blink 1s steps(2, end) infinite;
+      }
+
+      .specimen {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        border: var(--hair) solid var(--rule);
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--paper-warm);
+      }
+
+      @media (max-width: 760px) {
+        .specimen {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .spec-half {
+        padding: 26px 28px;
+      }
+
+      .spec-half + .spec-half {
+        border-left: var(--hair) solid var(--rule);
+      }
+
+      @media (max-width: 760px) {
+        .spec-half + .spec-half {
+          border-left: none;
+          border-top: var(--hair) solid var(--rule);
+        }
+      }
+
+      .spec-label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        margin-bottom: 14px;
+      }
+
+      .spec-source {
+        font-family: var(--mono);
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        white-space: pre-wrap;
+      }
+
+      .spec-source .h-h-l {
+        color: var(--vermillion);
+        font-weight: 700;
+      }
+
+      .spec-source .h-bul-l {
+        color: var(--gold);
+      }
+
+      .spec-source .h-bq-l {
+        color: var(--plum);
+      }
+
+      .spec-source .h-tag-l {
+        color: var(--sage);
+      }
+
+      .spec-rendered h1 {
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 72;
+        font-weight: 350;
+        font-size: 36px;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin: 0 0 12px;
+        color: var(--ink);
+      }
+
+      .spec-rendered h2 {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 20px;
+        margin: 22px 0 8px;
+        color: var(--wave);
+      }
+
+      .spec-rendered p {
+        font-size: 16px;
+        color: var(--ink-soft);
+        line-height: 1.6;
+        margin: 0 0 10px;
+      }
+
+      .spec-rendered ul {
+        margin: 0 0 12px;
+        padding-left: 18px;
+        color: var(--ink-soft);
+      }
+
+      .spec-rendered blockquote {
+        margin: 14px 0;
+        padding: 4px 0 4px 14px;
+        border-left: 2px solid var(--vermillion);
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 18px;
+        color: var(--ink);
+      }
+
+      .stack-grid {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 14px 40px;
+      }
+
+      @media (max-width: 700px) {
+        .stack-grid {
+          grid-template-columns: 1fr;
+          gap: 4px 0;
+        }
+      }
+
+      .stack-grid dt {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        padding: 12px 0;
+        border-top: var(--hair) solid var(--rule);
+      }
+
+      .stack-grid dd {
+        margin: 0;
+        padding: 12px 0;
+        border-top: var(--hair) solid var(--rule);
+        font-size: 17px;
+        color: var(--ink);
+      }
+
+      .stack-grid dd em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      @media (max-width: 700px) {
+        .stack-grid dt {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+
+        .stack-grid dd {
+          border-top: none;
+          padding-top: 4px;
+          padding-bottom: 14px;
+        }
+      }
+
+      .os {
+        text-align: center;
+        padding: clamp(80px, 16vh, 160px) 0;
+        position: relative;
+      }
+
+      .os::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 38px;
+        transform: translateX(-50%);
+        width: 56px;
+        height: 1px;
+        background: var(--vermillion);
+      }
+
+      .os .kanji {
+        font-family: var(--jp);
+        color: var(--vermillion);
+        font-size: 18px;
+        letter-spacing: 0.4em;
+        opacity: 0.7;
+        margin-bottom: 30px;
+        display: block;
+      }
+
+      .os h2 {
+        font-family: var(--serif);
+        font-variation-settings: "opsz" 72;
+        font-weight: 350;
+        font-size: clamp(44px, 7vw, 96px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        margin: 0 auto 24px;
+        max-width: 14ch;
+      }
+
+      .os h2 em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--vermillion);
+      }
+
+      .os p {
+        max-width: 48ch;
+        margin: 0 auto 36px;
+        color: var(--ink-soft);
+        font-size: 17.5px;
+        line-height: 1.6;
+      }
+
+      .os .actions {
+        justify-content: center;
+      }
+
+      footer.shell {
+        padding-top: 48px;
+        padding-bottom: 48px;
+        border-top: var(--hair) solid var(--rule);
+      }
+
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 48px;
+        flex-wrap: wrap;
+      }
+
+      .foot .mark {
+        font-family: var(--serif);
+        font-size: 32px;
+        letter-spacing: -0.02em;
+        font-weight: 400;
+      }
+
+      .foot .mark em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .foot .col {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+      }
+
+      .foot .col a:hover {
+        color: var(--vermillion);
+      }
+
+      .foot .col h6 {
+        margin: 0 0 6px;
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .colophon {
+        margin-top: 40px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 15px;
+        color: var(--ink-mute);
+        line-height: 1.6;
+        max-width: 60ch;
+      }
+
+      .wave-svg {
+        position: absolute;
+        left: -40px;
+        right: -40px;
+        bottom: -1px;
+        height: 80px;
+        width: calc(100% + 80px);
+        pointer-events: none;
+        color: var(--wave);
+        opacity: 0.08;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+
+        .headline .word {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top">
+      <div class="nav-inner">
+        <a href="#" class="wordmark">
+          <span class="glyph">舟</span> Naute
+          <span class="ver">v1.0</span>
+        </a>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#specimen">Specimen</a>
+          <a href="#ai">AI</a>
+          <a href="#stack">Colophon</a>
+          <a href="./self-host.html">Self-host</a>
+          <button
+            class="theme-toggle"
+            type="button"
+            aria-label="Toggle color theme"
+            title="Toggle theme">
+            <svg
+              class="moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+            <svg
+              class="sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <main class="shell">
+      <section class="hero" style="border-top: none">
+        <div>
+          <div class="eyebrow">
+            <span class="bar"></span>
+            <span>§ A markdown notebook</span>
+            <span class="red">— yours to deploy</span>
+          </div>
+          <h1 class="headline">
+            <span class="word">A still</span>
+            <span class="word">place</span>
+            <span class="word">for your</span>
+            <span class="word"><em>thoughts.</em></span>
+          </h1>
+          <p class="lede">
+            Naute is an open-source markdown notebook you
+            <em>deploy to your own AWS account</em> with a single command. A
+            split-pane editor fluent in prose and code, the gentle company of an
+            AI when you ask for it, and a serverless stack that runs on your
+            domain, with your data — so the whole thing is yours.
+          </p>
+          <div class="actions">
+            <a href="#opensource" class="btn primary">
+              Deploy to your AWS
+              <svg
+                class="arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <path d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
+            </a>
+            <a
+              href="https://github.com/paccodes/naute"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn ghost">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.1c-3.2.7-3.87-1.37-3.87-1.37-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.78 2.71 1.27 3.37.97.1-.76.4-1.27.74-1.56-2.55-.29-5.24-1.28-5.24-5.71 0-1.26.45-2.29 1.2-3.1-.12-.3-.52-1.49.11-3.11 0 0 .98-.31 3.2 1.18a11 11 0 0 1 5.83 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.62.24 2.81.12 3.11.75.81 1.2 1.84 1.2 3.1 0 4.44-2.7 5.42-5.27 5.7.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"
+                />
+              </svg>
+              View on GitHub
+            </a>
+          </div>
+          <div class="meta-row">
+            <span><span class="dot"></span>MIT licensed</span>
+            <span><span class="dot"></span>One-command SAM deploy</span>
+            <span><span class="dot"></span>Your AWS</span>
+            <span><span class="dot"></span>Your data</span>
+            <span><span class="dot"></span>Free-tier friendly</span>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div class="stamp" aria-hidden="true">舟</div>
+          <div class="window" role="img" aria-label="Naute editor preview">
+            <div class="appbar">
+              <span class="brand">
+                <svg
+                  class="boat"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true">
+                  <path
+                    d="M2.5 13h19l-2.6 5.5a2.5 2.5 0 0 1-2.3 1.5H7.4a2.5 2.5 0 0 1-2.3-1.5L2.5 13Z"
+                  />
+                  <path d="M12 13V4L5 13" />
+                  <path d="M12 13V4l7 9" />
+                </svg>
+                <span>Naute</span>
+              </span>
+              <span class="ctrls">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true">
+                  <circle cx="12" cy="12" r="4" />
+                  <path
+                    d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+                  />
+                </svg>
+                <svg
+                  class="logout"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <path d="M16 17l5-5-5-5" />
+                  <path d="M21 12H9" />
+                </svg>
+              </span>
+            </div>
+            <div class="pane">
+              <div class="editor">
+                <pre>
+<span class="line"><span class="gutter">1</span><span class="h-h"># Notes from a quiet morning</span></span><span class="line"><span class="gutter">2</span></span><span class="line"><span class="gutter">3</span>Phone face down. One tab. Forty minutes of nothing but the cursor breathing.</span><span class="line"><span class="gutter">4</span></span><span class="line"><span class="gutter">5</span><span class="h-h2">## What surfaced</span></span><span class="line"><span class="gutter">6</span><span class="h-bul">-</span> A bug I'd been carrying for weeks.</span><span class="line"><span class="gutter">7</span><span class="h-bul">-</span> A name that finally fit.</span><span class="line"><span class="gutter">8</span><span class="h-bul">-</span> Why I started writing this down.</span><span class="line"><span class="gutter">9</span></span><span class="line"><span class="gutter">10</span><span class="h-bq">&gt; "静けさ — clearest thoughts arrive in silence."</span></span><span class="line"><span class="gutter">11</span></span><span class="line"><span class="gutter">12</span><span class="h-comment">```ts</span></span><span class="line"><span class="gutter">13</span><span class="h-comment">// 06:47, before the world wakes</span></span><span class="line"><span class="gutter">14</span><span class="h-key">const</span> clarity = silence<span class="h-punct">.</span><span class="h-fn">write</span><span class="h-punct">(</span>40 <span class="h-comment">/* minutes */</span><span class="h-punct">);</span><span class="caret"></span></span>
+                </pre>
+              </div>
+              <div class="preview">
+                <h1>Notes from a quiet morning</h1>
+                <div class="tags">
+                  <span>#quiet</span>
+                  <span>#shizukesa</span>
+                  <span>#morning</span>
+                </div>
+                <p>
+                  Phone face down. One tab. Forty minutes of nothing but the
+                  cursor breathing.
+                </p>
+                <h2>What surfaced</h2>
+                <ul>
+                  <li>A bug I'd been carrying for weeks.</li>
+                  <li>A name that finally fit.</li>
+                  <li>Why I started writing this down.</li>
+                </ul>
+                <blockquote>
+                  "静けさ — clearest thoughts arrive in silence."
+                </blockquote>
+                <div class="code">
+                  <span style="color: var(--win-purple)">const</span>
+                  clarity = silence.<span style="color: var(--win-blue)">write</span>(40
+                  <span style="color: var(--win-fg-mute)">/* minutes */</span>);
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="features">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="roman">I</span>
+            What it does
+          </div>
+          <div>
+            <h2 class="sec-title">Quiet tools, <em>carefully chosen.</em></h2>
+            <p class="sec-sub">
+              Each feature earns its place. No clutter, no upsell — just the
+              parts you reach for when you want to write something down and find
+              it again later.
+            </p>
+          </div>
+        </div>
+        <div class="features">
+          <article class="f">
+            <div class="num">01 / Editor</div>
+            <span class="tag">編</span>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4">
+              <path d="M4 4h16v16H4z" />
+              <path d="M12 4v16M4 12h8" />
+            </svg>
+            <h3>A notebook that's <em>fluent in code.</em></h3>
+            <p>
+              CodeMirror 6 on the left, a live preview on the right. Code blocks
+              render through <em>Shiki</em> with the same TextMate grammars your
+              IDE uses — TypeScript, Rust, SQL, shell, all of them — so
+              technical notes, snippets, and half-baked configs read the way you
+              wrote them.
+            </p>
+          </article>
+          <article class="f">
+            <div class="num">02 / AI</div>
+            <span class="tag">智</span>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"
+              />
+            </svg>
+            <h3>Claude, when you <em>actually want</em> it.</h3>
+            <p>
+              Generate a note from a one-line prompt, or hand it a rough draft
+              and get back tidy markdown with a title and tags. Streamed,
+              cancellable, optional.
+            </p>
+          </article>
+          <article class="f">
+            <div class="num">03 / Tags</div>
+            <span class="tag">栞</span>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4">
+              <path d="M6 3v18l6-4 6 4V3z" />
+            </svg>
+            <h3>Tags, search, and a <em>sort that sticks.</em></h3>
+            <p>
+              Filter by one tag or many, search by title, sort by date or name.
+              All derived client-side — no backend ceremony to keep your
+              taxonomy fresh.
+            </p>
+          </article>
+          <article class="f">
+            <div class="num">04 / PWA</div>
+            <span class="tag">携</span>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4">
+              <rect x="6" y="2" width="12" height="20" rx="2" />
+              <path d="M11 18h2" />
+            </svg>
+            <h3>Install it like an app. <em>Works offline.</em></h3>
+            <p>
+              A full PWA with an auto-updating service worker and workbox
+              caching. Pin it to your dock, your home screen, your dashboard —
+              wherever you write.
+            </p>
+          </article>
+          <article class="f">
+            <div class="num">05 / Auth</div>
+            <span class="tag">鍵</span>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4">
+              <rect x="4" y="10" width="16" height="11" rx="2" />
+              <path d="M8 10V7a4 4 0 1 1 8 0v3" />
+            </svg>
+            <h3>Cognito auth done <em>properly.</em></h3>
+            <p>
+              OAuth 2.0 Authorization Code + PKCE, optional TOTP, refresh tokens
+              in HTTP-only cookies, access tokens in memory. PWA sessions
+              survive iOS quirks.
+            </p>
+          </article>
+          <article class="f">
+            <div class="num">06 / Yours</div>
+            <span class="tag">己</span>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4">
+              <path d="M3 12h18M12 3v18" />
+              <circle cx="12" cy="12" r="9" />
+            </svg>
+            <h3>Your AWS, your data, <em>zero idle cost.</em></h3>
+            <p>
+              The whole stack — Lambda, DynamoDB, Cognito, CloudFront — ships as
+              one SAM template you deploy to your own account with
+              <code style="font-family: var(--mono); font-size: 13px">./infra/deploy.sh</code>.
+              Sleeps free, and a single writer's daily use comfortably fits inside the AWS free tier.
+            </p>
+          </article>
+        </div>
+      </section>
+      <section id="specimen">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="roman">II</span>
+            Type specimen
+          </div>
+          <div>
+            <h2 class="sec-title">
+              Markdown in, <em>a finished page</em> out.
+            </h2>
+            <p class="sec-sub">
+              The preview uses a typographic stack tuned for reading — variable
+              serif body, italic display heads, properly hung punctuation, and
+              syntax highlighting from Shiki.
+            </p>
+          </div>
+        </div>
+        <div class="specimen">
+          <div class="spec-half">
+            <div class="spec-label">Source · markdown</div>
+            <pre class="spec-source">
+<span class="h-h-l"># The morning I learned to listen</span>
+
+I used to write to be heard. Now I write to *see*
+what I think.
+
+<span class="h-bul-l">##</span> Notes that earned their keep
+<span class="h-bul-l">-</span> A small pond is enough for the moon.
+<span class="h-bul-l">-</span> Patience is a kind of attention.
+<span class="h-bul-l">-</span> Editing is a form of respect.
+
+<span class="h-bq-l">&gt; "The page is a quiet room. Be a polite guest."</span>
+
+<span class="h-tag-l">#essays #morning #craft</span>
+            </pre>
+          </div>
+          <div class="spec-half spec-rendered">
+            <div class="spec-label">Rendered · preview</div>
+            <h1>The morning I learned to listen</h1>
+            <p>
+              I used to write to be heard. Now I write to <em>see</em> what I
+              think.
+            </p>
+            <h2>Notes that earned their keep</h2>
+            <ul>
+              <li>A small pond is enough for the moon.</li>
+              <li>Patience is a kind of attention.</li>
+              <li>Editing is a form of respect.</li>
+            </ul>
+            <blockquote>
+              "The page is a quiet room. Be a polite guest."
+            </blockquote>
+          </div>
+        </div>
+      </section>
+      <section id="ai">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="roman">III</span>
+            Quiet AI
+          </div>
+          <div>
+            <h2 class="sec-title">
+              An assistant that <em>knows when to stop talking.</em>
+            </h2>
+            <p class="sec-sub">
+              Naute talks to Claude through a streaming Lambda. The API key
+              lives in SSM. The UI is one dialog with two verbs.
+            </p>
+          </div>
+        </div>
+        <div class="ai-wrap">
+          <div class="ai-copy">
+            <h2>Two verbs. <em>Generate</em> &amp; <em>format.</em></h2>
+            <p>
+              You can ask for a fresh note from a single sentence, or hand
+              Claude a wall of unstructured text and get back something you'd
+              actually want to keep. Both stream into the editor in real time
+              and can be cancelled mid-thought.
+            </p>
+            <ul>
+              <li>
+                <b>—</b>
+                <span><strong>Generate</strong> a note from a prompt. Returns a
+                  title, body, and a small handful of tags.</span>
+              </li>
+              <li>
+                <b>—</b>
+                <span><strong>Format</strong> rough text into clean markdown
+                  without inventing facts you didn't write.</span>
+              </li>
+              <li>
+                <b>—</b>
+                <span><strong>Stream</strong> token-by-token over SSE, with a
+                  heartbeat to survive flaky networks.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="dialog">
+            <div class="bubble user">
+              <div class="who">You</div>
+              <div class="body">
+                "Draft a short note about monozukuri, the Japanese spirit of
+                craft."
+              </div>
+            </div>
+            <div class="bubble ai">
+              <div class="who">Claude</div>
+              <div class="body">
+                <h4>Monozukuri — the spirit of making</h4>
+                <p style="margin: 0; color: var(--ink-soft); font-size: 15px">
+                  Monozukuri is more than manufacturing. It is the quiet
+                  conviction that how a thing is made matters as much as the
+                  thing itself — that the hand of the maker stays in the work,
+                  and that small refinements, repeated over years<span
+                    class="typing"></span>
+                </p>
+                <div class="small">
+                  → tags · <em>craft</em>, <em>japan</em>, <em>monozukuri</em>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="stack">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="roman">IV</span>
+            Colophon
+          </div>
+          <div>
+            <h2 class="sec-title">Built with <em>good materials.</em></h2>
+            <p class="sec-sub">
+              No framework lock-in, no abandoned dependencies. The bill of
+              materials is intentionally small and readable from top to bottom.
+            </p>
+          </div>
+        </div>
+        <dl class="stack-grid">
+          <dt>Frontend</dt>
+          <dd>
+            React 19, Vite, <em>Tailwind CSS v4</em>, CodeMirror 6, TanStack
+            Query
+          </dd>
+          <dt>Markdown</dt>
+          <dd>marked · Shiki · DOMPurify</dd>
+          <dt>AI</dt>
+          <dd>Anthropic SDK · <em>Claude</em> · SSM Parameter Store</dd>
+          <dt>Backend</dt>
+          <dd>Node.js 22 · AWS Lambda <em>(arm64)</em> · API Gateway</dd>
+          <dt>Database</dt>
+          <dd>DynamoDB, single-table design</dd>
+          <dt>Auth</dt>
+          <dd>Amazon Cognito · OAuth 2.0 + PKCE · optional TOTP MFA</dd>
+          <dt>Infrastructure</dt>
+          <dd>AWS SAM · CloudFront · S3 · ACM · Route 53</dd>
+          <dt>CI / CD</dt>
+          <dd>GitHub Actions, OIDC to AWS</dd>
+          <dt>License</dt>
+          <dd><em>MIT</em> — fork it, change it, ship it.</dd>
+        </dl>
+      </section>
+      <section id="opensource" class="os">
+        <span class="kanji" aria-hidden="true">自分の · クラウド</span>
+        <h2>Your cloud. <em>Your notes.</em></h2>
+        <p>
+          There's no hosted Naute to subscribe to. The code is MIT-licensed and
+          the entire AWS stack — frontend, Lambdas, DynamoDB, Cognito,
+          CloudFront, Route 53 — ships in one repo as a single SAM template.
+          Roughly thirty minutes from clone to your first sign-in.
+        </p>
+        <div class="actions">
+          <a href="./self-host.html" class="btn primary">
+            Self-host guide
+            <svg
+              class="arrow"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </a>
+          <a
+            href="https://github.com/paccodes/naute"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn ghost">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 .5A11.5 11.5 0 0 0 .5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.1c-3.2.7-3.87-1.37-3.87-1.37-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.78 2.71 1.27 3.37.97.1-.76.4-1.27.74-1.56-2.55-.29-5.24-1.28-5.24-5.71 0-1.26.45-2.29 1.2-3.1-.12-.3-.52-1.49.11-3.11 0 0 .98-.31 3.2 1.18a11 11 0 0 1 5.83 0c2.22-1.49 3.2-1.18 3.2-1.18.63 1.62.24 2.81.12 3.11.75.81 1.2 1.84 1.2 3.1 0 4.44-2.7 5.42-5.27 5.7.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"
+              />
+            </svg>
+            Star on GitHub
+          </a>
+        </div>
+        <svg class="wave-svg" viewBox="0 0 1200 80" preserveAspectRatio="none">
+          <path
+            d="M0,60 C150,10 300,90 450,40 C600,-10 750,80 900,40 C1050,0 1150,50 1200,30 L1200,80 L0,80 Z"
+            fill="currentColor"
+          />
+        </svg>
+      </section>
+    </main>
+    <footer class="shell">
+      <div class="foot">
+        <div>
+          <div class="mark">Naute <em>—</em> 舟</div>
+          <p class="colophon">
+            Set in <em>Inter</em>, with <em>JetBrains Mono</em> for the code.
+            Colors borrowed, respectfully, from the <em>Kanagawa</em>
+            theme. Built for people who still believe a note is a small, careful
+            thing — and who would rather own the server than rent it.
+          </p>
+        </div>
+        <div style="display: flex; gap: 56px; flex-wrap: wrap">
+          <div class="col">
+            <h6>Project</h6>
+            <a
+              href="https://github.com/paccodes/naute"
+              target="_blank"
+              rel="noopener noreferrer">GitHub</a>
+            <a
+              href="https://github.com/paccodes/naute/issues"
+              target="_blank"
+              rel="noopener noreferrer">Issues</a>
+          </div>
+          <div class="col">
+            <h6>Docs</h6>
+            <a href="./self-host.html">Self-hosting</a>
+            <a
+              href="https://github.com/paccodes/naute/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer">License (MIT)</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const toggleButton = document.querySelector(".theme-toggle");
+
+        if (!toggleButton) {
+          return;
+        }
+
+        const systemDarkTheme = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        );
+
+        const getCurrentTheme = function () {
+          const theme = root.getAttribute("data-theme");
+
+          if (theme) {
+            return theme;
+          }
+
+          return systemDarkTheme.matches ? "dark" : "light";
+        };
+
+        toggleButton.addEventListener("click", function () {
+          const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
+
+          root.setAttribute("data-theme", nextTheme);
+
+          try {
+            localStorage.setItem("naute-theme", nextTheme);
+          } catch (_) {}
+        });
+
+        systemDarkTheme.addEventListener("change", function (event) {
+          if (root.getAttribute("data-theme")) {
+            return;
+          }
+
+          root.setAttribute("data-theme", event.matches ? "dark" : "light");
+        });
+      })();
+    </script>
+  </body>
+</html>

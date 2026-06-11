@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "website": "npx serve website"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

@@ -18,6 +18,7 @@ npx tsc --noEmit -p frontend/tsconfig.json     # type-check frontend
 sam validate --lint -t infra/template.yaml     # validate SAM template
 sam build -t infra/template.yaml               # build Lambda functions via esbuild
 ./infra/deploy.sh                              # full deploy (build + sam deploy + frontend sync)
+npm run website                                # serve static site from website folder
 ```
 
 Build order matters: `shared` must be built before `backend` or `frontend` since they depend on `@naute/shared`.

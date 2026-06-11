@@ -1,17 +1,17 @@
 # Naute
 
-Naute is a fast, distraction-free markdown note-taking app with a split-pane editor and live preview. Organize your thoughts with tags, search and sort across your library, and let Claude help you draft new notes from a prompt or reshape rough text into clean markdown. Installable as a PWA on any device and backed by a fully serverless AWS stack with zero idle cost.
+Naute is an open-source, self-hosted markdown notebook you deploy to your own AWS account. A split-pane editor with IDE-grade syntax highlighting for code blocks (powered by Shiki) makes it just as useful for technical notes as for prose. Search and tag across your library, and let Claude optionally help you draft new notes from a prompt or reshape rough text into clean markdown. Installable as a PWA on any device, backed by a fully serverless AWS stack — your domain, your data, zero idle cost.
 
 ![Naute](assets/naute.png)
 
 ## Features
 
-- 📝 **Split-pane Markdown editor** — CodeMirror editor on the left, live rendered preview on the right
+- 📝 **Split-pane Markdown editor** — CodeMirror 6 on the left, live preview on the right; code blocks render through Shiki with IDE-grade syntax highlighting, so it's a notebook for prose and code alike
 - 🤖 **AI-powered notes** — generate notes from a prompt or format raw text into structured markdown, powered by Claude
 - 🔍 **Search, sort & filter** — find notes by title, sort by date or name, filter by tags
 - 🏷️ **Tagging system** — organize notes with tags, filter by multiple tags at once
 - 🔐 **Cognito authentication** — OAuth 2.0 Authorization Code + PKCE with optional TOTP MFA
-- ⚡ **Serverless backend** — Lambda + API Gateway + DynamoDB, zero idle cost
+- ⚡ **Self-hosted on your AWS** — Lambda + API Gateway + DynamoDB deploy to your own account via a single SAM template; zero idle cost
 - 🚀 **CI/CD** — GitHub Actions deploys on push to `main` via OIDC
 - 📱 **PWA** — installable on mobile and desktop with offline caching
 - 📐 **Responsive design** — adaptive layout from mobile to desktop
@@ -38,7 +38,8 @@ naute/
 ├── shared/        # TypeScript types shared across workspaces
 ├── frontend/      # React SPA (Vite + Tailwind CSS v4)
 ├── backend/       # Lambda handlers and DynamoDB data access
-└── infra/         # SAM template, deployment config, deploy script
+├── infra/         # SAM template, deployment config, deploy script
+└── website/       # Static landing site
 ```
 
 ## Getting Started
@@ -100,6 +101,14 @@ npm run lint:fix      # auto-fix
 ```
 
 ESLint with TypeScript ESLint + Prettier.
+
+### Website
+
+The static site under `website` folder can be served locally with:
+
+```bash
+npm run website
+```
 
 ## Deployment
 

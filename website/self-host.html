@@ -1,0 +1,1637 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Naute — Self-host guide.</title>
+    <meta
+      name="description"
+      content="A step-by-step guide to deploying Naute on your own AWS account: prerequisites, configuration, and a one-script deploy."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="canonical" href="https://naute.pac.codes/self-host.html" />
+    <meta name="robots" content="index,follow" />
+    <meta name="author" content="Naute" />
+    <meta
+      name="theme-color"
+      content="#efe7d2"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#1f1f28"
+      media="(prefers-color-scheme: dark)"
+    />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Naute" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Naute — Self-host guide." />
+    <meta
+      property="og:description"
+      content="A step-by-step guide to deploying Naute on your own AWS account: prerequisites, configuration, and a one-script deploy."
+    />
+    <meta property="og:url" content="https://naute.pac.codes/self-host.html" />
+    <meta
+      property="og:image"
+      content="https://naute.pac.codes/assets/naute-dark.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="Naute split-pane markdown editor with live preview."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Naute — Self-host guide." />
+    <meta
+      name="twitter:description"
+      content="A step-by-step guide to deploying Naute on your own AWS account: prerequisites, configuration, and a one-script deploy."
+    />
+    <meta
+      name="twitter:image"
+      content="https://naute.pac.codes/assets/naute-dark.png"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Naute split-pane markdown editor with live preview."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        try {
+          const theme = localStorage.getItem("naute-theme");
+
+          if (theme === "dark" || theme === "light") {
+            document.documentElement.setAttribute("data-theme", theme);
+          }
+        } catch (_) {}
+      })();
+    </script>
+    <style>
+      :root {
+        --paper: #efe7d2;
+        --paper-warm: #ebe2c9;
+        --paper-deep: #e2d8b8;
+        --ink: #1a1a22;
+        --ink-soft: #2a2935;
+        --ink-mute: #5a5868;
+
+        --wave: #4d699b;
+        --wave-deep: #15203a;
+
+        --vermillion: #b8413a;
+
+        --hair: 0.5px;
+        --rule: rgba(26, 26, 34, 0.18);
+        --rule-soft: rgba(26, 26, 34, 0.08);
+
+        --nav-bg: rgba(239, 231, 210, 0.78);
+        --feature-hover: rgba(255, 252, 240, 0.55);
+        --stamp-bg: rgba(239, 231, 210, 0.6);
+        --noise-blend: multiply;
+        --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.1  0 0 0 0 0.09  0 0 0 0 0.07  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        --wash:
+          radial-gradient(
+            1100px 600px at 88% -10%,
+            rgba(35, 49, 72, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 700px at -8% 30%,
+            rgba(184, 65, 58, 0.06),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 500px at 50% 120%,
+            rgba(35, 49, 72, 0.12),
+            transparent 60%
+          );
+
+        --win-bg-soft: #16161d;
+        --win-fg: #dcd7ba;
+        --win-fg-mute: #727169;
+        --win-gutter: #54546d;
+        --win-aqua: #7fb4ca;
+        --win-green: #98bb6c;
+        --win-purple: #957fb8;
+        --win-gold: #c0a36e;
+
+        --serif: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+        --mono:
+          "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      html[data-theme="dark"] {
+        --paper: #1f1f28;
+        --paper-warm: #2a2a37;
+        --paper-deep: #16161d;
+        --ink: #dcd7ba;
+        --ink-soft: #c8c093;
+        --ink-mute: #8a877a;
+        --wave: #7e9cd8;
+        --wave-deep: #a3d4d5;
+        --vermillion: #e46876;
+        --rule: rgba(220, 215, 186, 0.14);
+        --rule-soft: rgba(220, 215, 186, 0.06);
+        --nav-bg: rgba(31, 31, 40, 0.78);
+        --feature-hover: rgba(220, 215, 186, 0.04);
+        --stamp-bg: rgba(22, 22, 29, 0.55);
+        --noise-blend: screen;
+        --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.9  0 0 0 0 0.82  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        --wash:
+          radial-gradient(
+            1100px 600px at 88% -10%,
+            rgba(126, 156, 216, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 700px at -8% 30%,
+            rgba(228, 104, 118, 0.08),
+            transparent 60%
+          ),
+          radial-gradient(
+            700px 500px at 50% 120%,
+            rgba(126, 156, 216, 0.1),
+            transparent 60%
+          );
+        --win-bg-soft: #e5dccd;
+        --win-fg: #545464;
+        --win-fg-mute: #8a8980;
+        --win-gutter: #b0a886;
+        --win-aqua: #597b75;
+        --win-green: #6f894e;
+        --win-purple: #624c83;
+        --win-gold: #836f4a;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]):not([data-theme="dark"]) {
+          --paper: #1f1f28;
+          --paper-warm: #2a2a37;
+          --paper-deep: #16161d;
+          --ink: #dcd7ba;
+          --ink-soft: #c8c093;
+          --ink-mute: #8a877a;
+          --wave: #7e9cd8;
+          --wave-deep: #a3d4d5;
+          --vermillion: #e46876;
+          --rule: rgba(220, 215, 186, 0.14);
+          --rule-soft: rgba(220, 215, 186, 0.06);
+          --nav-bg: rgba(31, 31, 40, 0.78);
+          --feature-hover: rgba(220, 215, 186, 0.04);
+          --stamp-bg: rgba(22, 22, 29, 0.55);
+          --noise-blend: screen;
+          --noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.92  0 0 0 0 0.9  0 0 0 0 0.82  0 0 0 0.07 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+          --wash:
+            radial-gradient(
+              1100px 600px at 88% -10%,
+              rgba(126, 156, 216, 0.16),
+              transparent 60%
+            ),
+            radial-gradient(
+              900px 700px at -8% 30%,
+              rgba(228, 104, 118, 0.08),
+              transparent 60%
+            ),
+            radial-gradient(
+              700px 500px at 50% 120%,
+              rgba(126, 156, 216, 0.1),
+              transparent 60%
+            );
+          --win-bg-soft: #e5dccd;
+          --win-fg: #545464;
+          --win-fg-mute: #8a8980;
+          --win-gutter: #b0a886;
+          --win-aqua: #597b75;
+          --win-green: #6f894e;
+          --win-purple: #624c83;
+          --win-gold: #836f4a;
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--serif);
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 1.6;
+        overflow-x: hidden;
+        transition:
+          background-color 0.4s ease,
+          color 0.4s ease;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.35;
+        mix-blend-mode: var(--noise-blend);
+        background-image: var(--noise);
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background: var(--wash);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      ::selection {
+        background: var(--wave);
+        color: var(--paper);
+      }
+
+      .shell {
+        position: relative;
+        z-index: 2;
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 0 clamp(20px, 4vw, 56px);
+      }
+
+      nav.top {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(8px) saturate(115%);
+        -webkit-backdrop-filter: blur(8px) saturate(115%);
+        background: var(--nav-bg);
+        border-bottom: var(--hair) solid var(--rule);
+        transition: background-color 0.4s ease;
+      }
+
+      .nav-inner {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 14px clamp(20px, 4vw, 56px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .wordmark {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        font-family: var(--serif);
+        font-weight: 500;
+        font-size: 22px;
+        letter-spacing: -0.01em;
+      }
+
+      .wordmark .glyph {
+        color: var(--vermillion);
+        font-size: 19px;
+        position: relative;
+        top: -1px;
+      }
+
+      .wordmark .ver {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--ink-mute);
+        background: var(--paper-deep);
+        padding: 3px 7px;
+        border-radius: 999px;
+        border: var(--hair) solid var(--rule);
+        margin-left: 6px;
+        transform: translateY(-2px);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 28px;
+        align-items: center;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+      }
+
+      .nav-links a {
+        position: relative;
+        padding: 6px 0;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--vermillion);
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 1px;
+        background: currentColor;
+        transform: scaleX(0);
+        transform-origin: right center;
+        transition: transform 0.3s ease;
+      }
+
+      .nav-links a:hover::after {
+        transform: scaleX(1);
+        transform-origin: left center;
+      }
+
+      .nav-links a.active {
+        color: var(--vermillion);
+      }
+
+      .theme-toggle {
+        appearance: none;
+        background: transparent;
+        border: 1px solid var(--rule);
+        color: var(--ink);
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        transition:
+          border-color 0.25s ease,
+          background 0.25s ease,
+          color 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .theme-toggle:hover {
+        border-color: var(--ink);
+        background: var(--paper-warm);
+        transform: rotate(15deg);
+      }
+
+      .theme-toggle svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .theme-toggle .sun {
+        display: none;
+      }
+
+      html[data-theme="dark"] .theme-toggle .sun {
+        display: block;
+      }
+
+      html[data-theme="dark"] .theme-toggle .moon {
+        display: none;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html:not([data-theme="light"]):not([data-theme="dark"])
+          .theme-toggle
+          .sun {
+          display: block;
+        }
+
+        html:not([data-theme="light"]):not([data-theme="dark"])
+          .theme-toggle
+          .moon {
+          display: none;
+        }
+      }
+
+      @media (max-width: 780px) {
+        .nav-links a {
+          display: none;
+        }
+      }
+
+      .hero {
+        padding: clamp(60px, 10vh, 110px) 0 clamp(36px, 6vh, 60px);
+      }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 32px;
+      }
+
+      .eyebrow .bar {
+        flex: 0 0 56px;
+        height: 1px;
+        background: var(--ink-mute);
+      }
+
+      .eyebrow .red {
+        color: var(--vermillion);
+      }
+
+      h1.headline {
+        font-family: var(--serif);
+        font-weight: 350;
+        font-size: clamp(44px, 7vw, 96px);
+        line-height: 1;
+        letter-spacing: -0.03em;
+        margin: 0;
+        max-width: 18ch;
+      }
+
+      h1.headline em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .lede {
+        margin: 28px 0 0;
+        max-width: 56ch;
+        font-size: clamp(16px, 1.5vw, 19px);
+        line-height: 1.6;
+        color: var(--ink-soft);
+      }
+
+      .lede em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--ink);
+      }
+
+      section.step {
+        position: relative;
+        padding: clamp(40px, 7vh, 80px) 0;
+        border-top: var(--hair) solid var(--rule);
+      }
+
+      .sec-head {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 24px;
+        align-items: start;
+        margin-bottom: 28px;
+      }
+
+      .sec-no {
+        font-family: var(--mono);
+        font-size: 10.5px;
+        letter-spacing: 0.22em;
+        color: var(--ink-mute);
+        text-transform: uppercase;
+        padding-top: 8px;
+      }
+
+      .sec-no .step-num {
+        display: block;
+        font-family: var(--mono);
+        color: var(--vermillion);
+        font-size: 20px;
+        margin-bottom: 6px;
+        letter-spacing: 0.04em;
+      }
+
+      .sec-no .optional {
+        display: block;
+        width: fit-content;
+        margin-top: 10px;
+        font-family: var(--mono);
+        font-size: 9px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+        background: var(--stamp-bg);
+        border: var(--hair) solid var(--rule);
+        border-radius: 999px;
+        padding: 3px 8px;
+      }
+
+      .sec-title {
+        font-family: var(--serif);
+        font-weight: 350;
+        font-size: clamp(26px, 3.2vw, 40px);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin: 0;
+      }
+
+      .sec-title em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .step-body {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        gap: 24px;
+      }
+
+      .step-body > .spacer {
+        display: block;
+      }
+
+      .step-content {
+        max-width: 76ch;
+      }
+
+      .step-content p {
+        margin: 0 0 14px;
+        color: var(--ink-soft);
+        line-height: 1.65;
+      }
+
+      .step-content p em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--ink);
+      }
+
+      .step-content strong {
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      .step-content ul {
+        margin: 8px 0 18px;
+        padding-left: 22px;
+        color: var(--ink-soft);
+      }
+
+      .step-content li {
+        margin: 6px 0;
+      }
+
+      .step-content li em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--ink);
+      }
+
+      .step-content a.inline {
+        color: var(--wave);
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .step-content a.inline:hover {
+        color: var(--vermillion);
+        border-color: var(--vermillion);
+      }
+
+      .code {
+        margin: 18px 0 22px;
+        background: var(--win-bg-soft);
+        color: var(--win-fg);
+        padding: 18px 20px;
+        border-radius: 10px;
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.7;
+        box-shadow: 0 18px 40px -22px rgba(26, 26, 34, 0.45);
+        position: relative;
+        overflow-x: auto;
+      }
+
+      .code::before {
+        content: attr(data-label);
+        position: absolute;
+        top: 8px;
+        right: 14px;
+        font-size: 10px;
+        color: var(--win-gutter);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      .code .ln {
+        display: block;
+        white-space: pre;
+      }
+
+      .code .co {
+        color: var(--win-fg-mute);
+        font-style: italic;
+      }
+
+      .code .pr {
+        color: var(--win-purple);
+      }
+
+      .code .ke {
+        color: var(--win-aqua);
+      }
+
+      .code .st {
+        color: var(--win-green);
+      }
+
+      .code .va {
+        color: var(--win-gold);
+      }
+
+      code.inline-code {
+        font-family: var(--mono);
+        font-size: 0.88em;
+        background: var(--paper-deep);
+        color: var(--ink);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: var(--hair) solid var(--rule);
+      }
+
+      .callout {
+        margin: 16px 0 22px;
+        border-left: 2px solid var(--vermillion);
+        padding: 10px 0 10px 16px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 16px;
+        color: var(--ink);
+      }
+
+      .prereqs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0;
+        border-top: var(--hair) solid var(--rule);
+        border-left: var(--hair) solid var(--rule);
+        margin: 14px 0 6px;
+      }
+
+      @media (max-width: 640px) {
+        .prereqs {
+          grid-template-columns: 1fr;
+        }
+
+        .sec-head {
+          grid-template-columns: 1fr;
+          gap: 10px;
+          margin-bottom: 22px;
+        }
+
+        .sec-no {
+          display: flex;
+          align-items: baseline;
+          gap: 12px;
+          padding-top: 0;
+        }
+
+        .sec-no .step-num {
+          display: inline-block;
+          margin-bottom: 0;
+          font-size: 16px;
+        }
+
+        .sec-no .optional {
+          margin-top: 0;
+        }
+
+        .step-body {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+
+        .step-body > .spacer {
+          display: none;
+        }
+
+        .code {
+          padding: 16px;
+          font-size: 12.5px;
+        }
+
+        .code .ln {
+          white-space: pre-wrap;
+          word-break: break-word;
+        }
+      }
+
+      .prereq {
+        padding: 22px 24px;
+        border-right: var(--hair) solid var(--rule);
+        border-bottom: var(--hair) solid var(--rule);
+        background: transparent;
+        transition: background 0.3s ease;
+      }
+
+      .prereq:hover {
+        background: var(--feature-hover);
+      }
+
+      .prereq .label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--vermillion);
+        margin-bottom: 6px;
+      }
+
+      .prereq h4 {
+        margin: 0 0 8px;
+        font-family: var(--serif);
+        font-weight: 450;
+        font-size: 19px;
+        letter-spacing: -0.01em;
+      }
+
+      .prereq h4 em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .prereq p {
+        margin: 0;
+        color: var(--ink-soft);
+        font-size: 14.5px;
+        line-height: 1.55;
+      }
+
+      .end {
+        padding: clamp(80px, 14vh, 140px) 0;
+        text-align: center;
+        border-top: var(--hair) solid var(--rule);
+        position: relative;
+      }
+
+      .end .kanji {
+        color: var(--vermillion);
+        font-size: 18px;
+        letter-spacing: 0.4em;
+        opacity: 0.7;
+        margin-bottom: 24px;
+        display: block;
+      }
+
+      .end h2 {
+        font-family: var(--serif);
+        font-weight: 350;
+        font-size: clamp(38px, 6vw, 72px);
+        line-height: 1;
+        letter-spacing: -0.025em;
+        margin: 0 auto 18px;
+        max-width: 16ch;
+      }
+
+      .end h2 em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--vermillion);
+      }
+
+      .end p {
+        margin: 0 auto 28px;
+        max-width: 48ch;
+        color: var(--ink-soft);
+        font-size: 17px;
+        line-height: 1.6;
+      }
+
+      .end .actions {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        font-family: var(--serif);
+        font-size: 16px;
+        padding: 14px 22px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition:
+          transform 0.2s ease,
+          background 0.25s ease;
+      }
+
+      .btn.primary {
+        background: var(--ink);
+        color: var(--paper);
+        border: 1px solid var(--ink);
+      }
+
+      .btn.primary:hover {
+        background: var(--wave-deep);
+        transform: translateY(-1px);
+      }
+
+      .btn.ghost {
+        border: 1px solid var(--rule);
+        background: transparent;
+        color: var(--ink);
+      }
+
+      .btn.ghost:hover {
+        background: var(--paper-warm);
+        border-color: var(--ink);
+      }
+
+      footer.shell {
+        padding-top: 48px;
+        padding-bottom: 48px;
+        border-top: var(--hair) solid var(--rule);
+      }
+
+      .foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 48px;
+        flex-wrap: wrap;
+      }
+
+      .foot .mark {
+        font-family: var(--serif);
+        font-size: 28px;
+        letter-spacing: -0.02em;
+        font-weight: 400;
+      }
+
+      .foot .mark em {
+        font-family: var(--serif);
+        font-style: italic;
+        color: var(--wave);
+      }
+
+      .colophon {
+        margin-top: 12px;
+        font-family: var(--serif);
+        font-style: italic;
+        font-size: 14.5px;
+        color: var(--ink-mute);
+        line-height: 1.6;
+        max-width: 56ch;
+      }
+
+      .foot .col {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-mute);
+      }
+
+      .foot .col h6 {
+        margin: 0 0 6px;
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .foot .col a:hover {
+        color: var(--vermillion);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="top">
+      <div class="nav-inner">
+        <a href="./index.html" class="wordmark">
+          <span class="glyph">舟</span> Naute
+          <span class="ver">v1.0</span>
+        </a>
+        <div class="nav-links">
+          <a href="./index.html#features">Features</a>
+          <a href="./index.html#specimen">Specimen</a>
+          <a href="./index.html#ai">AI</a>
+          <a href="./index.html#stack">Colophon</a>
+          <a href="./self-host.html" class="active">Self-host</a>
+          <button
+            class="theme-toggle"
+            type="button"
+            aria-label="Toggle color theme"
+            title="Toggle theme">
+            <svg
+              class="moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+            </svg>
+            <svg
+              class="sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <main class="shell">
+      <section class="hero">
+        <div class="eyebrow">
+          <span class="bar"></span>
+          <span>§ Self-host guide</span>
+          <span class="red">— ~30 minutes, end to end</span>
+        </div>
+        <h1 class="headline">
+          From <em>zero</em> to your own Naute, in thirty minutes.
+        </h1>
+        <p class="lede">
+          Naute ships as a single SAM template plus a small deploy script. Bring
+          an AWS account, a domain you control, and a terminal. Run one script —
+          and you'll have a markdown notebook running on
+          <em>your</em> domain, in <em>your</em> account — idle for nothing, and
+          a single writer's daily use comfortably fits inside the AWS free tier.
+        </p>
+      </section>
+      <section class="step" id="prereqs">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">01</span>
+            Before you start
+          </div>
+          <div>
+            <h2 class="sec-title">Six things to <em>have ready.</em></h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              None of these are unusual. If you've shipped anything on AWS
+              before, you already have most of them.
+            </p>
+            <div class="prereqs">
+              <div class="prereq">
+                <div class="label">01</div>
+                <h4>An <em>AWS account</em></h4>
+                <p>
+                  With permissions to create Lambda, DynamoDB, Cognito,
+                  CloudFront, S3, ACM, and Route 53 resources.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">02</div>
+                <h4>A <em>domain</em> in Route 53</h4>
+                <p>
+                  Naute provisions an ACM cert and a CloudFront alias. The
+                  hosted zone must live in the same account.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">03</div>
+                <h4>The <em>AWS CLI</em>, configured</h4>
+                <p>
+                  Credentials with deploy rights, default region set to
+                  <code class="inline-code">us-east-1</code> (required by
+                  CloudFront for the ACM cert).
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">04</div>
+                <h4>The <em>SAM CLI</em></h4>
+                <p>
+                  Used to build and deploy the stack. Version 1.100 or newer is
+                  fine.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">05</div>
+                <h4><em>Node.js 22</em> &amp; npm</h4>
+                <p>
+                  Matches the Lambda runtime. The frontend and shared types
+                  build under the same toolchain.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">06</div>
+                <h4>An <em>Anthropic API key</em></h4>
+                <p>
+                  Optional, but needed if you want the AI features. Stored in
+                  SSM after the first deploy — see step 7.
+                </p>
+              </div>
+            </div>
+            <p class="callout">
+              You don't need the API key to deploy. You can stand up the stack
+              first, then add the key when you're ready to turn AI on.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="clone">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">02</span>
+            Get the code
+          </div>
+          <div>
+            <h2 class="sec-title">Fork, clone, <em>build shared types.</em></h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              <strong>Fork the repo first</strong>, then clone your fork.
+              Cloning the upstream directly works for a local-only deploy, but
+              step 9 (push-to-main CI/CD) needs you to own the remote — pushes
+              have to land somewhere you control.
+            </p>
+            <p>
+              Naute is a monorepo with three workspaces — <em>shared</em>,
+              <em>backend</em>, and <em>frontend</em> — plus an
+              <em>infra</em> directory holding the SAM template. The
+              <code class="inline-code">shared</code> package has to be built
+              first because the other two import its types.
+            </p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="co"># fork on github, then clone your fork</span></span>
+              <span class="ln"><span class="pr">$</span> git clone https://github.com/<span class="va">your-handle</span>/naute.git</span>
+              <span class="ln"><span class="pr">$</span> cd naute</span>
+              <span class="ln"></span>
+              <span class="ln"><span class="co"># install all workspaces</span></span>
+              <span class="ln"><span class="pr">$</span> npm install</span>
+              <span class="ln"></span>
+              <span class="ln"><span class="co"># shared types must be built first</span></span>
+              <span class="ln"><span class="pr">$</span> npm run build -w shared</span>
+            </div>
+            <p>
+              After this, <code class="inline-code">npm run lint</code>
+              and
+              <code class="inline-code">sam validate --lint -t infra/template.yaml</code>
+              should both pass — a quick way to confirm your toolchain is wired
+              up before you spend any AWS credits.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="configure">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">03</span>
+            Configure
+          </div>
+          <div>
+            <h2 class="sec-title">
+              Three environment variables. <em>That's the lot.</em>
+            </h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              The deploy script reads exactly three variables. Everything else —
+              bucket names, Lambda configuration, DynamoDB keys — is derived
+              inside the SAM template.
+            </p>
+            <ul>
+              <li>
+                <strong>NAUTE_DOMAIN</strong> — the domain Naute will live on.
+                Example: <em>notes.example.com</em>.
+              </li>
+              <li>
+                <strong>NAUTE_HOSTED_ZONE_ID</strong> — the Route 53 hosted zone
+                ID that owns that domain.
+              </li>
+              <li>
+                <strong>NAUTE_COGNITO_PREFIX</strong> — a unique prefix for your
+                Cognito hosted UI domain. Must be globally unique across AWS.
+              </li>
+            </ul>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="ke">export</span> <span class="va">NAUTE_DOMAIN</span>=notes.example.com</span>
+              <span class="ln"><span class="ke">export</span> <span class="va">NAUTE_HOSTED_ZONE_ID</span>=Z0123456ABCDEF</span>
+              <span class="ln"><span class="ke">export</span> <span class="va">NAUTE_COGNITO_PREFIX</span>=my-naute</span>
+            </div>
+            <p class="callout">
+              Put these in your shell profile, a
+              <em>direnv</em> <code class="inline-code">.envrc</code>, or
+              wherever you keep per-project env vars. The deploy script refuses
+              to run if any of the three is missing.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="deploy">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">04</span>
+            Create the stack
+          </div>
+          <div>
+            <h2 class="sec-title">
+              First pass — <em>provision the AWS resources.</em>
+            </h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              <code class="inline-code">./infra/deploy.sh</code> builds shared
+              types, builds the SAM application, deploys the stack, then builds
+              and syncs the frontend. On this first run only the three
+              <em>NAUTE_*</em> vars from step 3 need to be set — the frontend
+              build inside will produce an incomplete bundle (Cognito values
+              don't exist yet), and we'll replace it in step 5.
+            </p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="pr">$</span> ./infra/deploy.sh</span>
+              <span class="ln"><span class="co">==&gt; Building shared types</span></span>
+              <span class="ln"><span class="co">==&gt; Building SAM application</span></span>
+              <span class="ln"><span class="co">==&gt; Deploying SAM stack</span></span>
+              <span class="ln"><span class="co">==&gt; Building frontend (incomplete — Cognito vars unset)</span></span>
+              <span class="ln"><span class="co">==&gt; Syncing frontend to s3://...</span></span>
+              <span class="ln"><span class="co">==&gt; Done</span></span>
+            </div>
+            <p>
+              First runs take a little longer because ACM has to issue a
+              certificate and CloudFront has to propagate. Don't open the app
+              yet — the frontend won't be able to log you in until step 5.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="wire-frontend">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">05</span>
+            Wire the frontend
+          </div>
+          <div>
+            <h2 class="sec-title">
+              Second pass — <em>set the VITE_* values, redeploy.</em>
+            </h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              Six <em>VITE_*</em> values get baked into the frontend bundle at
+              build time. The deploy script reads one of them (<code
+                class="inline-code">VITE_GENERATE_URL</code>,
+              the Function URL of the streaming AI Lambda) straight from the
+              stack outputs, so you never set it by hand. The other five are on
+              you: two (<code class="inline-code">VITE_COGNITO_CLIENT_ID</code>,
+              <code class="inline-code">VITE_COGNITO_DOMAIN</code>) come from
+              the stack you just created; the remaining three are fixed once
+              you've chosen a domain.
+            </p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="ke">export</span> <span class="va">VITE_API_URL</span>=/api</span>
+              <span class="ln"><span class="ke">export</span> <span class="va">VITE_REDIRECT_URI</span>=https://<span class="st">$NAUTE_DOMAIN</span>/callback</span>
+              <span class="ln"><span class="ke">export</span> <span class="va">VITE_LOGOUT_URI</span>=https://<span class="st">$NAUTE_DOMAIN</span></span>
+              <span class="ln"></span>
+              <span class="ln"><span class="ke">export</span> <span class="va">VITE_COGNITO_CLIENT_ID</span>=$(aws cloudformation describe-stacks \</span>
+              <span class="ln"> --stack-name naute \</span>
+              <span class="ln"> --query <span class="st">"Stacks[0].Outputs[?OutputKey=='UserPoolClientId'].OutputValue"</span> \</span>
+              <span class="ln"> --output text)</span>
+              <span class="ln"></span>
+              <span class="ln"><span class="ke">export</span> <span class="va">VITE_COGNITO_DOMAIN</span>=https://<span class="st">$NAUTE_COGNITO_PREFIX</span>.auth.us-east-1.amazoncognito.com</span>
+            </div>
+            <p>Now redeploy:</p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="pr">$</span> ./infra/deploy.sh</span>
+              <span class="ln"><span class="co">==&gt; Done (this time with a working frontend)</span></span>
+            </div>
+            <p>
+              From here on every deploy is a single pass — SAM sees no
+              infrastructure change and the script just re-syncs the (now
+              correctly-built) frontend.
+            </p>
+            <p class="callout">
+              Prefer not to re-export those vars every time? Drop them into
+              <code class="inline-code">frontend/.env.production</code>
+              and Vite will pick them up automatically on every build. The five
+              values stay constant for the life of the stack.
+            </p>
+            <p>
+              From the same stack outputs you can also grab the production API
+              host, which step 8 needs to proxy requests from
+              <code class="inline-code">npm run dev</code>:
+            </p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="pr">$</span> aws cloudformation describe-stacks \</span>
+              <span class="ln"> --stack-name naute \</span>
+              <span class="ln"> --query <span class="st">"Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue"</span> \</span>
+              <span class="ln"> --output text</span>
+              <span class="ln"><span class="co">https://api.notes.example.com</span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="first-user">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">06</span>
+            Create your first user
+          </div>
+          <div>
+            <h2 class="sec-title">
+              No sign-up — <em>admin-create yourself.</em>
+            </h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              Naute's Cognito pool is configured with
+              <code class="inline-code">AllowAdminCreateUserOnly: true</code>,
+              so there's no public sign-up. The first user — and every user
+              after — is created via the AWS CLI.
+            </p>
+            <p>Pull the User Pool ID from the stack outputs:</p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="ke">export</span> <span class="va">USER_POOL_ID</span>=$(aws cloudformation describe-stacks \</span>
+              <span class="ln"> --stack-name naute \</span>
+              <span class="ln"> --query <span class="st">"Stacks[0].Outputs[?OutputKey=='UserPoolId'].OutputValue"</span> \</span>
+              <span class="ln"> --output text)</span>
+            </div>
+            <p>Then create yourself with a temporary password:</p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="pr">$</span> aws cognito-idp admin-create-user \</span>
+              <span class="ln"> --user-pool-id <span class="st">"$USER_POOL_ID"</span> \</span>
+              <span class="ln"> --username you@example.com \</span>
+              <span class="ln"> --user-attributes Name=email,Value=you@example.com Name=email_verified,Value=true \</span>
+              <span class="ln"> --temporary-password <span class="st">'TempPass!1'</span></span>
+            </div>
+            <p>
+              Visit <strong>https://your-domain</strong> and sign in with that
+              email and temporary password. Cognito's hosted UI prompts you to
+              set a permanent password and — if you enabled TOTP — register an
+              authenticator app. After that, you're in.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="ai-key">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">07</span>
+            Enable AI
+            <span class="optional">Optional</span>
+          </div>
+          <div>
+            <h2 class="sec-title">
+              One key in SSM. <em>That's the whole switch.</em>
+            </h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              Naute's AI features (generate, format) live behind a streaming
+              Lambda that reads its Anthropic key from SSM Parameter Store. The
+              path is hard-coded in the backend:
+            </p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="pr">$</span> aws ssm put-parameter \</span>
+              <span class="ln"> --name /naute/anthropic-api-key \</span>
+              <span class="ln"> --type SecureString \</span>
+              <span class="ln"> --value <span class="st">"sk-ant-..."</span></span>
+            </div>
+            <p>
+              The Lambda caches it in memory, so a fresh value is picked up on
+              the next cold start (or you can force a redeploy). Skip this step
+              if you'd rather use Naute purely as a markdown editor — every
+              other feature works without it.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="local">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">08</span>
+            Local development
+            <span class="optional">Optional</span>
+          </div>
+          <div>
+            <h2 class="sec-title">
+              Work on the frontend <em>without redeploying.</em>
+            </h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              Once the stack is up, you have everything you need to run the
+              frontend locally against your real backend. Copy the example env
+              file and fill in the values from the stack you just deployed:
+            </p>
+            <!-- prettier-ignore -->
+            <div class="code" data-label="shell">
+              <span class="ln"><span class="pr">$</span> cp frontend/.env.example frontend/.env.local</span>
+              <span class="ln"><span class="pr">$</span> $EDITOR frontend/.env.local</span>
+              <span class="ln"></span>
+              <span class="ln"><span class="pr">$</span> npm run dev -w frontend</span>
+              <span class="ln"><span class="co"> ➜ Local: http://localhost:5173</span></span>
+            </div>
+            <p>
+              The Cognito client is preconfigured to accept
+              <code class="inline-code">http://localhost:5173/callback</code>
+              as a callback URL, so OAuth works out of the box. For API calls, set
+              <code class="inline-code">API_PROXY_TARGET</code> in
+              <code class="inline-code">.env.local</code> to your deployed API
+              host (the <code class="inline-code">ApiUrl</code> output from step
+              5, e.g. <em>https://api.your-domain</em>) — Vite uses it to proxy
+              <code class="inline-code">/api</code> through to your real API
+              Gateway. Without it, requests stay on <em>localhost</em> and 404.
+            </p>
+            <p>
+              To push your changes live, run
+              <code class="inline-code">./infra/deploy.sh</code> again — SAM
+              will skip the no-op infrastructure change and just re-sync the
+              frontend.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="step" id="ci">
+        <div class="sec-head">
+          <div class="sec-no">
+            <span class="step-num">09</span>
+            Continuous deployment
+            <span class="optional">Optional</span>
+          </div>
+          <div>
+            <h2 class="sec-title">Push to <em>main</em>, ship to AWS.</h2>
+          </div>
+        </div>
+        <div class="step-body">
+          <div class="spacer"></div>
+          <div class="step-content">
+            <p>
+              The repo ships a GitHub Actions workflow at
+              <code class="inline-code">.github/workflows/deploy.yml</code>
+              that runs <code class="inline-code">./infra/deploy.sh</code> on
+              every push to <em>main</em>. It authenticates to AWS via OIDC — no
+              long-lived access keys. Everything below happens in
+              <em>your fork</em>, not the upstream — that's what owning the
+              remote bought you in step 2.
+            </p>
+            <p>
+              You'll need an IAM role in your AWS account that trusts
+              <em>token.actions.githubusercontent.com</em> and is allowed to
+              assume the same permissions the deploy script uses locally. GitHub
+              publishes the
+              <a
+                class="inline"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services">
+                exact trust-policy template</a>
+              for this — paste it in, scope it to your repo, attach a deploy
+              policy, and copy the role ARN.
+            </p>
+            <p>
+              Then add the following secrets to the repository, under
+              <strong>Settings → Secrets and variables → Actions</strong>:
+            </p>
+            <div class="prereqs">
+              <div class="prereq">
+                <div class="label">aws</div>
+                <h4><em>AWS_ROLE_ARN</em></h4>
+                <p>
+                  The ARN of the OIDC-trusted IAM role the workflow assumes.
+                  Example:
+                  <code class="inline-code">arn:aws:iam::123…:role/naute-deploy</code>.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">infra</div>
+                <h4><em>NAUTE_DOMAIN</em></h4>
+                <p>
+                  Same value as your local shell — the domain Naute is served
+                  from.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">infra</div>
+                <h4><em>NAUTE_HOSTED_ZONE_ID</em></h4>
+                <p>The Route 53 hosted zone ID that owns the domain above.</p>
+              </div>
+              <div class="prereq">
+                <div class="label">infra</div>
+                <h4><em>NAUTE_COGNITO_PREFIX</em></h4>
+                <p>
+                  The globally-unique prefix used for the Cognito hosted UI
+                  domain.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">frontend</div>
+                <h4><em>VITE_API_URL</em></h4>
+                <p>
+                  The API base URL the built frontend talks to — usually
+                  <code class="inline-code">/api</code> if you front it through
+                  CloudFront.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">frontend</div>
+                <h4><em>VITE_COGNITO_DOMAIN</em></h4>
+                <p>
+                  The Cognito hosted UI domain, e.g.
+                  <code class="inline-code">https://my-naute.auth.us-east-1.amazoncognito.com</code>.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">frontend</div>
+                <h4><em>VITE_COGNITO_CLIENT_ID</em></h4>
+                <p>
+                  The Cognito app client ID exposed as a stack output after the
+                  first deploy.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">frontend</div>
+                <h4><em>VITE_REDIRECT_URI</em></h4>
+                <p>
+                  Where Cognito sends users after login, normally
+                  <code class="inline-code">https://your-domain/callback</code>.
+                </p>
+              </div>
+              <div class="prereq">
+                <div class="label">frontend</div>
+                <h4><em>VITE_LOGOUT_URI</em></h4>
+                <p>
+                  Where users land after signing out, normally
+                  <code class="inline-code">https://your-domain</code>.
+                </p>
+              </div>
+            </div>
+            <p class="callout">
+              The <em>VITE_*</em> values are baked into the frontend bundle at
+              build time, so changing one means re-running the workflow (or
+              <code class="inline-code">./infra/deploy.sh</code>) to produce a
+              fresh build.
+            </p>
+            <p>
+              Once the secrets are in place, push to <em>main</em> and the
+              workflow takes over. Subsequent deploys are a
+              <code class="inline-code">git push</code>.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section class="end">
+        <span class="kanji" aria-hidden="true">舟出 · 自分の港</span>
+        <h2>That's it. <em>It's yours now.</em></h2>
+        <p>
+          No accounts to keep, no subscription to renew, no third-party to keep
+          online for you. Read the source, change what you don't like, and ship
+          it back if you make it better.
+        </p>
+        <div class="actions">
+          <a
+            href="https://github.com/paccodes/naute"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn primary">View the repo →</a>
+          <a href="./index.html" class="btn ghost">Back to home</a>
+        </div>
+      </section>
+    </main>
+    <footer class="shell">
+      <div class="foot">
+        <div>
+          <div class="mark">Naute <em>—</em> 舟</div>
+          <p class="colophon">
+            Set in <em>Inter</em>, with <em>JetBrains Mono</em> for the code.
+            Colors borrowed, respectfully, from the <em>Kanagawa</em> theme.
+            Built for people who still believe a note is a small, careful thing
+            — and who would rather own the server than rent it.
+          </p>
+        </div>
+        <div
+          style="display: flex; gap: 56px; flex-wrap: wrap; align-items: center">
+          <div class="col">
+            <h6>Project</h6>
+            <a
+              href="https://github.com/paccodes/naute"
+              target="_blank"
+              rel="noopener noreferrer">GitHub</a>
+            <a
+              href="https://github.com/paccodes/naute/issues"
+              target="_blank"
+              rel="noopener noreferrer">Issues</a>
+          </div>
+          <div class="col">
+            <h6>Docs</h6>
+            <a href="./self-host.html">Self-hosting</a>
+            <a
+              href="https://github.com/paccodes/naute/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer">License (MIT)</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const toggleButton = document.querySelector(".theme-toggle");
+
+        if (!toggleButton) {
+          return;
+        }
+
+        const systemDarkTheme = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        );
+
+        const getCurrentTheme = function () {
+          const theme = root.getAttribute("data-theme");
+
+          if (theme) {
+            return theme;
+          }
+
+          return systemDarkTheme.matches ? "dark" : "light";
+        };
+
+        toggleButton.addEventListener("click", function () {
+          const nextTheme = getCurrentTheme() === "dark" ? "light" : "dark";
+
+          root.setAttribute("data-theme", nextTheme);
+
+          try {
+            localStorage.setItem("naute-theme", nextTheme);
+          } catch (_) {}
+        });
+
+        systemDarkTheme.addEventListener("change", function (event) {
+          if (root.getAttribute("data-theme")) {
+            return;
+          }
+
+          root.setAttribute("data-theme", event.matches ? "dark" : "light");
+        });
+      })();
+    </script>
+  </body>
+</html>
