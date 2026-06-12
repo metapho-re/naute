@@ -230,9 +230,10 @@
         background: var(--paper);
         color: var(--ink);
         font-family: var(--serif);
+        font-variation-settings: "opsz" 14;
         font-weight: 400;
         font-size: 17px;
-        line-height: 1.6;
+        line-height: 1.55;
         overflow-x: hidden;
         transition:
           background-color 0.4s ease,
@@ -783,29 +784,42 @@
       }
 
       .end {
-        padding: clamp(80px, 14vh, 140px) 0;
+        padding: clamp(80px, 16vh, 160px) 0;
         text-align: center;
         border-top: var(--hair) solid var(--rule);
         position: relative;
       }
 
+      .end::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 38px;
+        transform: translateX(-50%);
+        width: 56px;
+        height: 1px;
+        background: var(--vermillion);
+      }
+
       .end .kanji {
+        font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
         color: var(--vermillion);
         font-size: 18px;
         letter-spacing: 0.4em;
         opacity: 0.7;
-        margin-bottom: 24px;
+        margin-bottom: 30px;
         display: block;
       }
 
       .end h2 {
         font-family: var(--serif);
+        font-variation-settings: "opsz" 72;
         font-weight: 350;
-        font-size: clamp(38px, 6vw, 72px);
-        line-height: 1;
-        letter-spacing: -0.025em;
-        margin: 0 auto 18px;
-        max-width: 16ch;
+        font-size: clamp(44px, 7vw, 96px);
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        margin: 0 auto 24px;
+        max-width: 14ch;
       }
 
       .end h2 em {
@@ -815,18 +829,31 @@
       }
 
       .end p {
-        margin: 0 auto 28px;
+        margin: 0 auto 36px;
         max-width: 48ch;
         color: var(--ink-soft);
-        font-size: 17px;
+        font-size: 17.5px;
         line-height: 1.6;
       }
 
       .end .actions {
+        margin-top: 40px;
         display: flex;
         justify-content: center;
         gap: 14px;
         flex-wrap: wrap;
+      }
+
+      .wave-svg {
+        position: absolute;
+        left: -40px;
+        right: -40px;
+        bottom: -1px;
+        height: 80px;
+        width: calc(100% + 80px);
+        pointer-events: none;
+        color: var(--wave);
+        opacity: 0.08;
       }
 
       .btn {
@@ -880,7 +907,7 @@
 
       .foot .mark {
         font-family: var(--serif);
-        font-size: 28px;
+        font-size: 32px;
         letter-spacing: -0.02em;
         font-weight: 400;
       }
@@ -892,13 +919,13 @@
       }
 
       .colophon {
-        margin-top: 12px;
+        margin-top: 40px;
         font-family: var(--serif);
         font-style: italic;
-        font-size: 14.5px;
+        font-size: 15px;
         color: var(--ink-mute);
         line-height: 1.6;
-        max-width: 56ch;
+        max-width: 60ch;
       }
 
       .foot .col {
@@ -1572,6 +1599,12 @@
           </a>
           <a href="./index.html" class="btn ghost">Back to home</a>
         </div>
+        <svg class="wave-svg" viewBox="0 0 1200 80" preserveAspectRatio="none">
+          <path
+            d="M0,60 C150,10 300,90 450,40 C600,-10 750,80 900,40 C1050,0 1150,50 1200,30 L1200,80 L0,80 Z"
+            fill="currentColor"
+          />
+        </svg>
       </section>
     </main>
     <footer class="shell">
@@ -1585,9 +1618,7 @@
             — and who would rather self-host than pay a subscription.
           </p>
         </div>
-        <div
-          style="display: flex; gap: 56px; flex-wrap: wrap; align-items: center"
-        >
+        <div style="display: flex; gap: 56px; flex-wrap: wrap">
           <div class="col">
             <h6>Project</h6>
             <a
