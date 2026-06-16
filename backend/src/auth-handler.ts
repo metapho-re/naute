@@ -116,15 +116,23 @@ export const handler = async (
             data: {
               access_token: data.access_token,
               id_token: data.id_token,
+              refresh_token: data.refresh_token,
             },
           }),
         };
       }
 
       case "POST /auth/refresh": {
-        const refreshToken = getRefreshTokenFromCookie(
-          event.headers?.Cookie || event.headers?.cookie,
-        );
+        const { refresh_token } = JSON.parse(event.body || "{}") as Record<
+          string,
+          string
+        >;
+
+        const refreshToken =
+          refresh_token ||
+          getRefreshTokenFromCookie(
+            event.headers?.Cookie || event.headers?.cookie,
+          );
 
         if (!refreshToken) {
           return {

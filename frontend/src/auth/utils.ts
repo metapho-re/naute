@@ -46,3 +46,13 @@ export const isTokenExpired = (token: string): boolean => {
 
   return Date.now() >= exp * 1000;
 };
+
+export const isStandalone = (): boolean => {
+  const isNavigatorStandalone = (navigator as { standalone?: boolean })
+    .standalone;
+
+  return (
+    isNavigatorStandalone === true ||
+    window.matchMedia("(display-mode: standalone)").matches
+  );
+};

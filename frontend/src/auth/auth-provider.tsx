@@ -13,14 +13,17 @@ import {
   getCodeChallenge,
   getCodeVerifier,
   getJwtPayload,
+  isStandalone,
   isTokenExpired,
 } from "./utils";
 
 const CODE_VERIFIER_KEY = "naute_code_verifier";
+const REFRESH_TOKEN_KEY = "naute_rt";
 
 interface TokenData {
   access_token: string;
   id_token: string;
+  refresh_token?: string;
 }
 
 const authRequest = async (
@@ -56,6 +59,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   const applyTokens = useCallback((data: TokenData) => {
     setAccessToken(data.access_token);
 
+    if (isStandalone() && data.refresh_token) {
+      localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
+    }
+
     const payload = getJwtPayload(data.id_token);
 
     if (typeof payload.email === "string") {
@@ -74,7 +81,16 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     const refreshRequest = (async () => {
       try {
-        const data = await authRequest("/auth/refresh");
+        const storedRefreshToken = isStandalone()
+          ? localStorage.getItem(REFRESH_TOKEN_KEY)
+          : null;
+
+        const data = await authRequest(
+          "/auth/refresh",
+          storedRefreshToken
+            ? { refresh_token: storedRefreshToken }
+            : undefined,
+        );
 
         if (!data) {
           return null;
@@ -160,6 +176,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     } catch {
       // proceed with local cleanup regardless
     }
+
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
 
     setAccessToken(null);
     setUser(null);
