@@ -81,9 +81,8 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
     const refreshRequest = (async () => {
       try {
-        const storedRefreshToken = isStandalone()
-          ? localStorage.getItem(REFRESH_TOKEN_KEY)
-          : null;
+        const storedRefreshToken =
+          isStandalone() && localStorage.getItem(REFRESH_TOKEN_KEY);
 
         const data = await authRequest(
           "/auth/refresh",
