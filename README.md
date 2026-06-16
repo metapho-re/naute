@@ -140,19 +140,19 @@ Pushes to `main` trigger the GitHub Actions workflow which deploys automatically
 
 ## API
 
-Note routes are authenticated via Cognito JWT. Auth routes are unauthenticated (they proxy Cognito token exchange and manage refresh tokens as HTTP-only cookies).
+Note routes are authenticated via Cognito JWT. Auth routes are unauthenticated (they proxy Cognito token exchange and manage refresh tokens). In a normal browser the refresh token is kept as an HTTP-only cookie; in an installed (standalone) PWA — where iOS does not reliably persist cookies across launches — it is returned in the response body and stored in `localStorage` instead, so sessions survive app restarts.
 
-| Method   | Path              | Description                                   |
-| -------- | ----------------- | --------------------------------------------- |
-| `GET`    | `/notes`          | List all notes                                |
-| `POST`   | `/notes/create`   | Create a note                                 |
-| `GET`    | `/notes/{id}`     | Get a note                                    |
-| `PUT`    | `/notes/{id}`     | Update a note                                 |
-| `DELETE` | `/notes/{id}`     | Delete a note                                 |
-| `POST`   | `/notes/generate` | Generate or format a note via AI (SSE stream) |
-| `POST`   | `/auth/token`     | Exchange auth code for tokens (sets cookie)   |
-| `POST`   | `/auth/refresh`   | Refresh access token (reads cookie)           |
-| `POST`   | `/auth/logout`    | Clear refresh token cookie                    |
+| Method   | Path              | Description                                                                     |
+| -------- | ----------------- | ------------------------------------------------------------------------------- |
+| `GET`    | `/notes`          | List all notes                                                                  |
+| `POST`   | `/notes/create`   | Create a note                                                                   |
+| `GET`    | `/notes/{id}`     | Get a note                                                                      |
+| `PUT`    | `/notes/{id}`     | Update a note                                                                   |
+| `DELETE` | `/notes/{id}`     | Delete a note                                                                   |
+| `POST`   | `/notes/generate` | Generate or format a note via AI (SSE stream)                                   |
+| `POST`   | `/auth/token`     | Exchange auth code for tokens (sets cookie; also returns refresh token in body) |
+| `POST`   | `/auth/refresh`   | Refresh access token (reads refresh token from body or cookie)                  |
+| `POST`   | `/auth/logout`    | Clear refresh token cookie                                                      |
 
 ### Validation
 
